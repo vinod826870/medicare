@@ -1,0 +1,41 @@
+# Online Medicine Website Requirements Document
+
+## 1. Website Name
+MediCare Online Pharmacy
+
+## 2. Website Description
+An online medicine platform that enables users to conveniently browse, search, and purchase medicines while providing administrators with efficient stock management capabilities. The website emphasizes user convenience, secure transactions, and streamlined inventory updates.
+
+## 3. Core Features
+\n### 3.1 User Features
+- **User Registration & Login**: Allow users to create accounts and securely log in to access personalized services
+- **Medicine Search & Browse**: Enable users to search for medicines by name, category, or symptoms, and browse through organized medicine catalogs
+- **Shopping Cart Management**: Users can add medicines to cart, modify quantities, and remove items before checkout
+- **Order Management**: Users can place orders, view order history, track order status, and manage their purchases
+\n### 3.2 Admin Features
+- **Stock Management**: Administrators can add new medicines, update existing medicine information, adjust stock levels, and monitor inventory status
+- **Order Processing**: View and manage customer orders, update order status\n\n## 4. Medicine Categories
+The platform will cover major medicine categories including:
+- Prescription medicines
+- Over-the-counter (OTC) medicines
+- Health supplements
+- Personal care products
+- Medical devices and supplies
+
+## 5. Design Style
+\n### 5.1 Color Scheme
+- Primary color: Clean medical blue (#2E86DE) conveying trust and professionalism
+- Secondary color: Soft green (#27AE60) representing health and wellness
+- Background: Light gray (#F5F6FA) for comfortable reading
+- Accent color: Warm orange (#E67E22) for call-to-action buttons
+
+### 5.2 Visual Details
+- Rounded corners (8px radius) for cards and buttons creating a friendly, approachable feel
+- Subtle shadows (02px 8px rgba(0,0,0,0.1)) for depth and hierarchy
+- Clean, sans-serif typography for easy readability
+- Medicine product cards with clear images and essential information
+\n### 5.3 Layout
+- Card-based layout for medicine listings with grid display for easy browsing
+- Fixed navigation bar at top for quick access to search, cart, and user account
+- Clear categorization with sidebar filters for efficient medicine discovery
+- Spacious whitespace ensuring content clarity and reducing visual clutter
