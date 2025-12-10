@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, AlertCircle } from 'lucide-react';
+import { ShoppingCart, AlertCircle, Star } from 'lucide-react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import type { MedicineWithCategory } from '@/types/types';
+import type { MedicineApiData } from '@/services/medicineApi';
 
 interface MedicineCardProps {
-  medicine: MedicineWithCategory;
-  onAddToCart?: (medicine: MedicineWithCategory) => void;
+  medicine: MedicineApiData;
+  onAddToCart?: (medicineId: string) => void;
 }
 
 const MedicineCard = ({ medicine, onAddToCart }: MedicineCardProps) => {
@@ -19,24 +19,18 @@ const MedicineCard = ({ medicine, onAddToCart }: MedicineCardProps) => {
         className="relative aspect-square overflow-hidden cursor-pointer bg-muted"
         onClick={() => navigate(`/medicines/${medicine.id}`)}
       >
-        {medicine.image_url ? (
-          <img
-            src={medicine.image_url}
-            alt={medicine.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="text-4xl text-muted-foreground">💊</span>
-          </div>
-        )}
+        <img
+          src={medicine.image_url}
+          alt={medicine.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
+        />
         {medicine.prescription_required && (
           <Badge className="absolute top-2 right-2 bg-accent">
-            Prescription Required
+            Rx Required
           </Badge>
         )}
-        {medicine.stock_quantity === 0 && (
+        {!medicine.stock_available && (
           <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
             <Badge variant="destructive" className="text-sm">Out of Stock</Badge>
           </div>
@@ -51,13 +45,20 @@ const MedicineCard = ({ medicine, onAddToCart }: MedicineCardProps) => {
           <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
             {medicine.name}
           </h3>
-          {medicine.category && (
-            <Badge variant="outline" className="mb-2 text-xs">
-              {medicine.category.name}
-            </Badge>
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+            {medicine.description}
+          </p>
+          {medicine.rating && (
+            <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <span>{medicine.rating.toFixed(1)}</span>
+              {medicine.reviews_count && (
+                <span className="text-xs">({medicine.reviews_count})</span>
+              )}
+            </div>
           )}
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-            {medicine.description || 'No description available'}
+          <p className="text-xs text-muted-foreground mb-3">
+            By {medicine.manufacturer}
           </p>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-primary">
@@ -68,10 +69,10 @@ const MedicineCard = ({ medicine, onAddToCart }: MedicineCardProps) => {
       </CardContent>
 
       <CardFooter className="p-4 pt-0">
-        {medicine.stock_quantity > 0 ? (
+        {medicine.stock_available ? (
           <Button
             className="w-full"
-            onClick={() => onAddToCart?.(medicine)}
+            onClick={() => onAddToCart?.(medicine.id)}
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
             Add to Cart

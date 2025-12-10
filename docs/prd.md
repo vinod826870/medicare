@@ -1,20 +1,25 @@
 # Online Medicine Website Requirements Document
-
-## 1. Website Name
-MediCare Online Pharmacy
+\n## 1. Website Name\nMediCare Online Pharmacy
 
 ## 2. Website Description
-An online medicine platform that enables users to conveniently browse, search, and purchase medicines while providing administrators with efficient stock management capabilities. The website emphasizes user convenience, secure transactions, and streamlined inventory updates.
-
+An online medicine platform that enables users to conveniently browse, search, and purchase medicines while providing administrators with efficient stock management capabilities. The website emphasizes user convenience, secure transactions, and streamlined inventory updates. Medicine data is retrieved through external API integration rather than local database storage.\n
 ## 3. Core Features
 \n### 3.1 User Features
 - **User Registration & Login**: Allow users to create accounts and securely log in to access personalized services
-- **Medicine Search & Browse**: Enable users to search for medicines by name, category, or symptoms, and browse through organized medicine catalogs
+- **Medicine Search & Browse**: Enable users to search for medicines by name, category, or symptoms, and browse through organized medicine catalogs retrieved from external API
 - **Shopping Cart Management**: Users can add medicines to cart, modify quantities, and remove items before checkout
 - **Order Management**: Users can place orders, view order history, track order status, and manage their purchases
-\n### 3.2 Admin Features
-- **Stock Management**: Administrators can add new medicines, update existing medicine information, adjust stock levels, and monitor inventory status
-- **Order Processing**: View and manage customer orders, update order status\n\n## 4. Medicine Categories
+
+### 3.2 Admin Features
+- **Stock Management**: Administrators can monitor inventory status and manage stock information synchronized from external API
+- **Order Processing**: View and manage customer orders, update order status
+
+## 4. Medicine Data Source
+- Medicine information (product details, pricing, availability, categories) will be retrieved through external pharmacy API integration
+- Reference API: PharmEasy or similar pharmacy API services
+- Real-time data synchronization to ensure up-to-date medicine information and stock availability
+
+## 5. Medicine Categories
 The platform will cover major medicine categories including:
 - Prescription medicines
 - Over-the-counter (OTC) medicines
@@ -22,19 +27,20 @@ The platform will cover major medicine categories including:
 - Personal care products
 - Medical devices and supplies
 
-## 5. Design Style
-\n### 5.1 Color Scheme
-- Primary color: Clean medical blue (#2E86DE) conveying trust and professionalism
+## 6. Design Style
+
+### 6.1 Color Scheme\n- Primary color: Clean medical blue (#2E86DE) conveying trust and professionalism
 - Secondary color: Soft green (#27AE60) representing health and wellness
 - Background: Light gray (#F5F6FA) for comfortable reading
 - Accent color: Warm orange (#E67E22) for call-to-action buttons
 
-### 5.2 Visual Details
+### 6.2 Visual Details
 - Rounded corners (8px radius) for cards and buttons creating a friendly, approachable feel
 - Subtle shadows (02px 8px rgba(0,0,0,0.1)) for depth and hierarchy
 - Clean, sans-serif typography for easy readability
 - Medicine product cards with clear images and essential information
-\n### 5.3 Layout
+
+### 6.3 Layout
 - Card-based layout for medicine listings with grid display for easy browsing
 - Fixed navigation bar at top for quick access to search, cart, and user account
 - Clear categorization with sidebar filters for efficient medicine discovery
