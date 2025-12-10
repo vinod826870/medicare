@@ -1,66 +1,79 @@
-import React from "react";
+import { Link } from "react-router-dom";
+import { Pill, Mail, Phone, MapPin } from "lucide-react";
 
-const Footer: React.FC = () => {
+const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-r from-amber-50 to-orange-50 border-t border-amber-200">
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* ================= About Us ================= */}
+    <footer className="bg-card border-t border-border mt-auto">
+      <div className="max-w-7xl mx-auto py-12 px-4 xl:px-6">
+        <div className="grid grid-cols-1 @md:grid-cols-2 xl:grid-cols-4 gap-8">
           <div>
-            {/* Title: Change to your project's "About Us" */}
-            <h3 className="text-lg font-semibold text-amber-800 mb-4">
-              {/* About Us */}
-            </h3>
-            <p className="text-gray-600">
-              {/* Fill in your "About Us" introduction here, for example: Committed to xxx, making xxx more xxx */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Pill className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <span className="text-lg font-bold text-foreground">MediCare</span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Your trusted online pharmacy for quality medicines and healthcare products. 
+              Committed to providing safe, affordable, and convenient healthcare solutions.
             </p>
           </div>
 
-          {/* ================= Contact Information ================= */}
           <div>
-            {/* Title: Contact Information */}
-            <h3 className="text-lg font-semibold text-amber-800 mb-4">
-              {/* Contact Information */}
-            </h3>
-            <div className="text-gray-600 space-y-2">
-              <p>
-                {/* Address: XXX Street, XXX District, XXX City, XXX Province */}
-              </p>
-              <p>
-                {/* Phone: 010-XXXXXXX */}
-              </p>
-              <p>
-                {/* Email: info@example.com */}
-              </p>
+            <h3 className="text-sm font-semibold text-foreground mb-4">Quick Links</h3>
+            <div className="flex flex-col gap-2">
+              <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                Home
+              </Link>
+              <Link to="/medicines" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                Browse Medicines
+              </Link>
+              <Link to="/cart" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                Shopping Cart
+              </Link>
+              <Link to="/orders" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                My Orders
+              </Link>
             </div>
           </div>
 
-          {/* ================= Business Hours / Other Information / Can be deleted ================= */}
           <div>
-            {/* Title: Can be changed to "Business Hours" or "Service Hours" */}
-            <h3 className="text-lg font-semibold text-amber-800 mb-4">
-              {/* Business Hours */}
-            </h3>
-            <div className="text-gray-600 space-y-2">
-              <p>
-                {/* Monday to Friday: 9:00-18:00 */}
-              </p>
-              <p>
-                {/* Please check announcements for weekends and public holidays */}
-              </p>
-              <p>
-                {/* Other notes, such as "Advance booking required" */}
-              </p>
+            <h3 className="text-sm font-semibold text-foreground mb-4">Categories</h3>
+            <div className="flex flex-col gap-2">
+              <span className="text-sm text-muted-foreground">Prescription Medicines</span>
+              <span className="text-sm text-muted-foreground">Over-the-Counter</span>
+              <span className="text-sm text-muted-foreground">Health Supplements</span>
+              <span className="text-sm text-muted-foreground">Personal Care</span>
+              <span className="text-sm text-muted-foreground">Medical Devices</span>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-foreground mb-4">Contact Us</h3>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-start gap-2">
+                <Mail className="w-4 h-4 text-muted-foreground mt-0.5" />
+                <span className="text-sm text-muted-foreground">support@medicare.com</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Phone className="w-4 h-4 text-muted-foreground mt-0.5" />
+                <span className="text-sm text-muted-foreground">1-800-MEDICARE</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+                <span className="text-sm text-muted-foreground">
+                  Available 24/7 for your healthcare needs
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* ================= Copyright Section ================= */}
-        <div className="mt-8 pt-8 border-t border-amber-200 text-center text-gray-600">
-          <p>
-            {/* © {currentYear} Your Company or Organization Name */}
+        <div className="mt-8 pt-8 border-t border-border text-center">
+          <p className="text-sm text-muted-foreground">
+            {currentYear} MediCare Online Pharmacy
           </p>
         </div>
       </div>

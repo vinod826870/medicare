@@ -1,5 +1,18 @@
-import SamplePage from './pages/SamplePage';
 import type { ReactNode } from 'react';
+import Home from './pages/Home';
+import Medicines from './pages/Medicines';
+import MedicineDetail from './pages/MedicineDetail';
+import Cart from './pages/Cart';
+import Orders from './pages/Orders';
+import PaymentSuccess from './pages/PaymentSuccess';
+import Profile from './pages/Profile';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminMedicines from './pages/admin/AdminMedicines';
+import AdminOrders from './pages/admin/AdminOrders';
+import AdminUsers from './pages/admin/AdminUsers';
+import NotFound from './pages/NotFound';
 
 interface RouteConfig {
   name: string;
@@ -10,9 +23,88 @@ interface RouteConfig {
 
 const routes: RouteConfig[] = [
   {
-    name: 'Sample Page',
+    name: 'Home',
     path: '/',
-    element: <SamplePage />
+    element: <Home />,
+    visible: false
+  },
+  {
+    name: 'Medicines',
+    path: '/medicines',
+    element: <Medicines />,
+    visible: false
+  },
+  {
+    name: 'Medicine Detail',
+    path: '/medicines/:id',
+    element: <MedicineDetail />,
+    visible: false
+  },
+  {
+    name: 'Cart',
+    path: '/cart',
+    element: <Cart />,
+    visible: false
+  },
+  {
+    name: 'Orders',
+    path: '/orders',
+    element: <Orders />,
+    visible: false
+  },
+  {
+    name: 'Payment Success',
+    path: '/payment-success',
+    element: <PaymentSuccess />,
+    visible: false
+  },
+  {
+    name: 'Profile',
+    path: '/profile',
+    element: <Profile />,
+    visible: false
+  },
+  {
+    name: 'Login',
+    path: '/login',
+    element: <Login />,
+    visible: false
+  },
+  {
+    name: 'Register',
+    path: '/register',
+    element: <Register />,
+    visible: false
+  },
+  {
+    name: 'Admin Dashboard',
+    path: '/admin',
+    element: <AdminDashboard />,
+    visible: false
+  },
+  {
+    name: 'Admin Medicines',
+    path: '/admin/medicines',
+    element: <AdminMedicines />,
+    visible: false
+  },
+  {
+    name: 'Admin Orders',
+    path: '/admin/orders',
+    element: <AdminOrders />,
+    visible: false
+  },
+  {
+    name: 'Admin Users',
+    path: '/admin/users',
+    element: <AdminUsers />,
+    visible: false
+  },
+  {
+    name: 'Not Found',
+    path: '*',
+    element: <NotFound />,
+    visible: false
   }
 ];
 
