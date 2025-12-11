@@ -9,6 +9,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ordersApi, cartApi } from '@/db/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { supabase } from '@/db/supabase';
+import { loadStripe } from '@stripe/stripe-js';
 
 interface PaymentData {
   items: Array<{
@@ -26,7 +28,7 @@ const Payment = () => {
   const location = useLocation();
   const { user } = useAuth();
   const [processing, setProcessing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentMethod, setPaymentMethod] = useState('stripe');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const paymentData = location.state as PaymentData;
@@ -51,6 +53,40 @@ const Payment = () => {
     setProcessing(true);
 
     try {
+      // Handle Stripe payment
+      if (paymentMethod === 'stripe') {
+        console.log('Processing Stripe payment...');
+        
+        // Call Edge Function to create Stripe checkout session
+        const { data, error } = await supabase.functions.invoke('create_stripe_checkout', {
+          body: {
+            items: paymentData.items,
+            total_amount: paymentData.total_amount,
+            shipping_address: paymentData.shipping_address,
+            user_id: user.id,
+            success_url: `${window.location.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${window.location.origin}/payment`,
+          }
+        });
+
+        if (error) {
+          const errorMsg = await error?.context?.text().catch(() => error.message || 'Unknown error');
+          console.error('Error creating Stripe checkout:', errorMsg);
+          throw new Error(errorMsg);
+        }
+
+        if (!data || !data.url) {
+          throw new Error('Failed to create Stripe checkout session');
+        }
+
+        console.log('Stripe checkout session created:', data.sessionId);
+        
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+        return;
+      }
+
+      // Handle demo payment (card, UPI, COD)
       // Simulate payment processing delay
       await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -76,7 +112,7 @@ const Payment = () => {
       navigate('/orders');
     } catch (error) {
       console.error('Error processing payment:', error);
-      toast.error('Payment failed. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'Payment failed. Please try again.');
       setPaymentSuccess(false);
     } finally {
       setProcessing(false);
@@ -138,10 +174,10 @@ const Payment = () => {
                   <Lock className="w-5 h-5 text-green-600" />
                   Payment Information
                 </CardTitle>
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-4">
-                  <p className="text-sm text-yellow-800">
-                    <strong>Demo Mode:</strong> This is a simulated payment for demonstration purposes. 
-                    No real payment will be processed.
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+                  <p className="text-sm text-blue-800">
+                    <strong>💳 Stripe Payment Available!</strong> Use real Stripe checkout for secure payments, 
+                    or try our demo payment options for testing.
                   </p>
                 </div>
               </CardHeader>
@@ -151,27 +187,58 @@ const Payment = () => {
                   <div className="space-y-3">
                     <Label>Payment Method</Label>
                     <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
+                      <div className="flex items-center space-x-2 border-2 border-primary rounded-lg p-4 cursor-pointer hover:bg-accent bg-primary/5">
+                        <RadioGroupItem value="stripe" id="stripe" />
+                        <Label htmlFor="stripe" className="flex items-center gap-2 cursor-pointer flex-1">
+                          <CreditCard className="w-5 h-5 text-primary" />
+                          <div>
+                            <div className="font-semibold">Stripe Checkout (Recommended)</div>
+                            <div className="text-xs text-muted-foreground">Secure payment with Stripe - Real payment processing</div>
+                          </div>
+                        </Label>
+                      </div>
                       <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:bg-accent">
                         <RadioGroupItem value="card" id="card" />
                         <Label htmlFor="card" className="flex items-center gap-2 cursor-pointer flex-1">
                           <CreditCard className="w-5 h-5" />
-                          Credit/Debit Card
+                          <div>
+                            <div>Demo Credit/Debit Card</div>
+                            <div className="text-xs text-muted-foreground">Simulated payment for testing</div>
+                          </div>
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:bg-accent">
                         <RadioGroupItem value="upi" id="upi" />
                         <Label htmlFor="upi" className="cursor-pointer flex-1">
-                          UPI Payment
+                          <div>Demo UPI Payment</div>
+                          <div className="text-xs text-muted-foreground">Simulated payment for testing</div>
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:bg-accent">
                         <RadioGroupItem value="cod" id="cod" />
                         <Label htmlFor="cod" className="cursor-pointer flex-1">
-                          Cash on Delivery
+                          <div>Cash on Delivery</div>
+                          <div className="text-xs text-muted-foreground">Pay when you receive</div>
                         </Label>
                       </div>
                     </RadioGroup>
                   </div>
+
+                  {/* Stripe Info */}
+                  {paymentMethod === 'stripe' && (
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4">
+                      <h4 className="font-semibold text-blue-900 mb-2">✨ Stripe Checkout</h4>
+                      <p className="text-sm text-blue-800 mb-3">
+                        You'll be redirected to Stripe's secure checkout page to complete your payment.
+                      </p>
+                      <div className="space-y-1 text-xs text-blue-700">
+                        <div>✓ Industry-leading security</div>
+                        <div>✓ Multiple payment methods</div>
+                        <div>✓ Instant payment confirmation</div>
+                        <div>✓ Test mode: Use card 4242 4242 4242 4242</div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Card Details (shown for card payment) */}
                   {paymentMethod === 'card' && (
@@ -287,12 +354,15 @@ const Payment = () => {
                     {processing ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                        Processing Payment...
+                        {paymentMethod === 'stripe' ? 'Redirecting to Stripe...' : 'Processing Payment...'}
                       </>
                     ) : (
                       <>
                         <Lock className="w-4 h-4 mr-2" />
-                        Pay ${paymentData.total_amount.toFixed(2)}
+                        {paymentMethod === 'stripe' 
+                          ? `Continue to Stripe Checkout` 
+                          : `Pay $${paymentData.total_amount.toFixed(2)}`
+                        }
                       </>
                     )}
                   </Button>

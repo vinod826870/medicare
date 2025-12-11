@@ -1,184 +1,149 @@
-import { createClient } from "jsr:@supabase/supabase-js@2";
-import Stripe from "npm:stripe@19.1.0";
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import Stripe from "npm:stripe@17.4.0";
 
-const supabaseUrl = Deno.env.get("SUPABASE_URL");
-const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-const successUrlPath = '/payment-success?session_id={CHECKOUT_SESSION_ID}';
-const cancelUrlPath = '/cart';
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-interface OrderItem {
-  name: string;
-  price: number;
+interface CheckoutItem {
+  medicine_id: string;
+  medicine_name: string;
   quantity: number;
-  image_url?: string;
+  price_at_purchase: number;
 }
 
 interface CheckoutRequest {
-  items: OrderItem[];
-  currency?: string;
-  payment_method_types?: string[];
-  shipping_address?: string;
+  items: CheckoutItem[];
+  total_amount: number;
+  shipping_address: string;
+  user_id: string;
+  success_url: string;
+  cancel_url: string;
 }
 
-function ok(data: any): Response {
-  return new Response(
-    JSON.stringify({ code: "SUCCESS", message: "Success", data }),
-    {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders
-      }
-    }
-  );
-}
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
 
-function fail(msg: string, code = 400): Response {
-  return new Response(
-    JSON.stringify({ code: "FAIL", message: msg }),
-    {
-      status: code,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders
-      }
-    }
-  );
-}
-
-function validateCheckoutRequest(request: CheckoutRequest): void {
-  if (!request.items?.length) {
-    throw new Error("Items cannot be empty");
+Deno.serve(async (req: Request) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders });
   }
-  for (const item of request.items) {
-    if (!item.name || item.price <= 0 || item.quantity <= 0) {
-      throw new Error("Invalid item information");
+
+  console.log('=== create_stripe_checkout Edge Function called ===');
+
+  try {
+    // Get Stripe secret key from environment
+    const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY');
+
+    if (!STRIPE_SECRET_KEY) {
+      console.error('STRIPE_SECRET_KEY not configured');
+      return new Response(
+        JSON.stringify({ 
+          error: 'Stripe is not configured. Please add STRIPE_SECRET_KEY to environment variables.' 
+        }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
     }
-  }
-}
 
-function processOrderItems(items: OrderItem[]) {
-  const formattedItems = items.map(item => ({
-    name: item.name.trim(),
-    price: Math.round(item.price * 100),
-    quantity: item.quantity,
-    image_url: item.image_url?.trim() || "",
-  }));
-  const totalAmount = formattedItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  return { formattedItems, totalAmount };
-}
+    // Initialize Stripe
+    const stripe = new Stripe(STRIPE_SECRET_KEY, {
+      apiVersion: '2024-12-18.acacia',
+      httpClient: Stripe.createFetchHttpClient(),
+    });
 
-async function createCheckoutSession(
-  stripe: Stripe,
-  userId: string | null,
-  items: OrderItem[],
-  currency: string,
-  paymentMethods: string[],
-  origin: string,
-  shippingAddress?: string
-) {
-  const { formattedItems, totalAmount } = processOrderItems(items);
+    // Parse request body
+    const checkoutData: CheckoutRequest = await req.json();
+    console.log('Checkout data received:', JSON.stringify(checkoutData, null, 2));
 
-  const { data: order, error } = await supabase
-    .from("orders")
-    .insert({
-      user_id: userId,
-      items: formattedItems,
-      total_amount: totalAmount,
-      currency: currency.toLowerCase(),
-      status: "pending",
-      shipping_address: shippingAddress || null,
-    })
-    .select()
-    .single();
+    // Validate required fields
+    if (!checkoutData.items || checkoutData.items.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'No items provided' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
 
-  if (error) throw new Error(`Failed to create order: ${error.message}`);
-
-  const session = await stripe.checkout.sessions.create({
-    line_items: items.map(item => ({
+    // Convert items to Stripe line items
+    const lineItems = checkoutData.items.map(item => ({
       price_data: {
-        currency: currency.toLowerCase(),
+        currency: 'usd',
         product_data: {
-          name: item.name,
-          images: item.image_url ? [item.image_url] : [],
+          name: item.medicine_name,
+          description: `Medicine ID: ${item.medicine_id}`,
         },
-        unit_amount: Math.round(item.price * 100),
+        unit_amount: Math.round(item.price_at_purchase * 100), // Convert to cents
       },
       quantity: item.quantity,
-    })),
-    mode: "payment",
-    success_url: `${origin}${successUrlPath}`,
-    cancel_url: `${origin}${cancelUrlPath}`,
-    payment_method_types: paymentMethods,
-    metadata: {
-      order_id: order.id,
-      user_id: userId || "",
-    },
-  });
+    }));
 
-  await supabase
-    .from("orders")
-    .update({
-      stripe_session_id: session.id,
-      stripe_payment_intent_id: session.payment_intent as string,
-    })
-    .eq("id", order.id);
-
-  return { order, session };
-}
-
-Deno.serve(async (req) => {
-  try {
-    if (req.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders });
-    }
-    if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
-
-    const request = await req.json();
-    validateCheckoutRequest(request);
-
-    const authHeader = req.headers.get("Authorization");
-    const token = authHeader?.replace("Bearer ", "");
-    const { data: { user } } = token
-      ? await supabase.auth.getUser(token)
-      : { data: { user: null } };
-
-    const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeSecretKey) {
-      throw new Error("STRIPE_SECRET_KEY not configured");
-    }
-
-    const stripe = new Stripe(stripeSecretKey, {
-      apiVersion: "2025-08-27.basil",
-    });
-
-    const origin = req.headers.get("origin") || "";
-    const { order, session } = await createCheckoutSession(
-      stripe,
-      user?.id || null,
-      request.items,
-      request.currency || 'usd',
-      request.payment_method_types || ['card'],
-      origin,
-      request.shipping_address
+    // Add shipping if applicable
+    const subtotal = checkoutData.items.reduce(
+      (sum, item) => sum + (item.price_at_purchase * item.quantity), 
+      0
     );
 
-    return ok({
-      url: session.url,
-      sessionId: session.id,
-      orderId: order.id,
+    if (subtotal <= 50) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Shipping',
+            description: 'Standard shipping',
+          },
+          unit_amount: 599, // $5.99 in cents
+        },
+        quantity: 1,
+      });
+    }
+
+    console.log('Creating Stripe checkout session...');
+
+    // Create Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: lineItems,
+      mode: 'payment',
+      success_url: checkoutData.success_url,
+      cancel_url: checkoutData.cancel_url,
+      metadata: {
+        user_id: checkoutData.user_id,
+        shipping_address: checkoutData.shipping_address,
+        order_items: JSON.stringify(checkoutData.items),
+      },
+      shipping_address_collection: {
+        allowed_countries: ['US', 'CA', 'GB', 'AU', 'IN'],
+      },
     });
+
+    console.log('Stripe checkout session created:', session.id);
+
+    return new Response(
+      JSON.stringify({ 
+        success: true,
+        sessionId: session.id,
+        url: session.url,
+      }),
+      { 
+        status: 200, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
   } catch (error) {
-    return fail(error instanceof Error ? error.message : "Payment processing failed", 500);
+    console.error('Error creating Stripe checkout session:', error);
+    return new Response(
+      JSON.stringify({ 
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        details: error instanceof Error ? error.stack : undefined,
+      }),
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
   }
 });

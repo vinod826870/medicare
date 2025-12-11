@@ -27,25 +27,31 @@ The platform will cover major medicine categories including:
 - Personal care products
 - Medical devices and supplies
 
-## 6. Email Configuration
-- **Email Service API Key**: re_cSADr4hj_Lqc4T5x8j92whgXu1RhAxAmC\n- **Usage**: This API key should be configured in the email service integration to enable automated email sending functionality
+## 6. Payment Configuration
+\n### 6.1 Stripe Payment Integration
+- **Payment Method**: Stripe payment gateway integration for secure online transactions
+- **STRIPE_SECRET_KEY**: The Stripe secret key should be securely stored in environment variables for payment processing authentication
+- **Usage**: This key enables the platform to process payments, handle refunds, and manage transaction records through Stripe API
+- **Implementation**: Configure Stripe checkout for cart payment processing, supporting major credit/debit cards\n
+## 7. Email Configuration
+- **Email Service API Key**: re_cSADr4hj_Lqc4T5x8j92whgXu1RhAxAmC
+- **Usage**: This API key should be configured in the email service integration to enable automated email sending functionality
 - **Trigger Point**: When users submit the contact form, the system will use this API key to authenticate with the email service and send form submissions to vinod826870@gmail.com
 - **Implementation**: The API key should be securely stored in environment variables and used for email service authentication during contact form submission processing
 
-## 7. Design Style
+## 8. Design Style
 
-### 7.1 Color Scheme\n- Primary color: Clean medical blue (#2E86DE) conveying trust and professionalism
+### 8.1 Color Scheme
+- Primary color: Clean medical blue (#2E86DE) conveying trust and professionalism
 - Secondary color: Soft green (#27AE60) representing health and wellness
-- Background: Light gray (#F5F6FA) for comfortable reading
-- Accent color: Warm orange (#E67E22) for call-to-action buttons
+- Background: Light gray (#F5F6FA) for comfortable reading\n- Accent color: Warm orange (#E67E22) for call-to-action buttons
 
-### 7.2 Visual Details
+### 8.2 Visual Details
 - Rounded corners (8px radius) for cards and buttons creating a friendly, approachable feel
 - Subtle shadows (02px 8px rgba(0,0,0,0.1)) for depth and hierarchy
 - Clean, sans-serif typography for easy readability
 - Medicine product cards with clear images and essential information
-
-### 7.3 Layout
+\n### 8.3 Layout
 - Card-based layout for medicine listings with grid display for easy browsing
 - Fixed navigation bar at top for quick access to search, cart, and user account
 - Clear categorization with sidebar filters for efficient medicine discovery
