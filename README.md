@@ -1,4 +1,26 @@
-# Welcome to Your Miaoda Project
+# MediCare Online Pharmacy
+
+## 🎉 Real Medicine API Integration
+
+This application now uses **real medicine data** from the **OpenFDA API** - a free, public database maintained by the U.S. Food and Drug Administration.
+
+### ✨ Features
+- 🔍 **Search Real Medicines**: Search for Tylenol, Naproxen, Aspirin, Ibuprofen, and thousands more
+- 📊 **Official FDA Data**: Get accurate medicine information from FDA-approved drug labels
+- 🏥 **Comprehensive Database**: Access 100,000+ prescription and OTC medicines
+- 💯 **Completely Free**: No API key required, no subscription fees
+- ⚡ **Smart Caching**: Fast performance with intelligent caching
+
+### 🔎 Try Searching For:
+- Tylenol (pain relief)
+- Naproxen (anti-inflammatory)
+- Aspirin (pain reliever)
+- Amoxicillin (antibiotic)
+- Ibuprofen (pain relief)
+- Metformin (diabetes)
+- Omeprazole (acid reflux)
+
+📖 **See [FDA_API_INTEGRATION.md](./FDA_API_INTEGRATION.md) for complete documentation**
 
 ## Project Info
 
