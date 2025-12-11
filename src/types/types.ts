@@ -63,7 +63,8 @@ export interface Order {
 export interface OrderItem {
   id: string;
   order_id: string;
-  medicine_id: string | null;
+  medicine_id: string;
+  medicine_name: string;
   quantity: number;
   price_at_purchase: number;
   created_at: string;
