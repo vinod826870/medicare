@@ -30,10 +30,20 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (formData.password !== formData.confirmPassword) {
+    // Validation checks with specific messages
+    if (!formData.fullName.trim()) {
       toast({
-        title: 'Error',
-        description: 'Passwords do not match',
+        title: '⚠️ Name Required',
+        description: 'Please enter your full name.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      toast({
+        title: '⚠️ Email Required',
+        description: 'Please enter your email address.',
         variant: 'destructive'
       });
       return;
@@ -41,8 +51,17 @@ const Register = () => {
 
     if (formData.password.length < 6) {
       toast({
-        title: 'Error',
-        description: 'Password must be at least 6 characters',
+        title: '⚠️ Password Too Short',
+        description: 'Password must be at least 6 characters long.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: '⚠️ Passwords Do Not Match',
+        description: 'Please make sure both passwords are identical.',
         variant: 'destructive'
       });
       return;
@@ -61,12 +80,46 @@ const Register = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Handle specific error cases
+        if (error.message.includes('User already registered')) {
+          toast({
+            title: '⚠️ Account Already Exists',
+            description: 'An account with this email already exists. Please sign in instead.',
+            variant: 'destructive'
+          });
+        } else if (error.message.includes('Password should be at least')) {
+          toast({
+            title: '⚠️ Weak Password',
+            description: 'Please choose a stronger password with at least 6 characters.',
+            variant: 'destructive'
+          });
+        } else if (error.message.includes('Invalid email')) {
+          toast({
+            title: '⚠️ Invalid Email',
+            description: 'Please enter a valid email address.',
+            variant: 'destructive'
+          });
+        } else if (error.message.includes('Email rate limit exceeded')) {
+          toast({
+            title: '⚠️ Too Many Attempts',
+            description: 'Please wait a few minutes before trying again.',
+            variant: 'destructive'
+          });
+        } else {
+          toast({
+            title: '❌ Registration Failed',
+            description: error.message || 'Unable to create account. Please try again.',
+            variant: 'destructive'
+          });
+        }
+        throw error;
+      }
 
       if (data.user) {
         toast({
-          title: 'Success!',
-          description: 'Account created successfully. Please check your email to verify your account.',
+          title: '✅ Account Created Successfully!',
+          description: 'Welcome to MediCare! You can now sign in with your credentials.',
         });
         
         // Wait a moment then redirect to login
@@ -75,11 +128,8 @@ const Register = () => {
         }, 2000);
       }
     } catch (error: any) {
-      toast({
-        title: 'Registration Failed',
-        description: error.message || 'Failed to create account. Please try again.',
-        variant: 'destructive'
-      });
+      // Error already handled above
+      console.error('Registration error:', error);
     } finally {
       setLoading(false);
     }

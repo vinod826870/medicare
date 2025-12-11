@@ -35,21 +35,46 @@ const Login = () => {
         password: formData.password
       });
 
-      if (error) throw error;
+      if (error) {
+        // Handle specific error cases
+        if (error.message.includes('Invalid login credentials')) {
+          toast({
+            title: '❌ Invalid Login Credentials',
+            description: 'The email or password you entered is incorrect. Please check and try again.',
+            variant: 'destructive'
+          });
+        } else if (error.message.includes('Email not confirmed')) {
+          toast({
+            title: '⚠️ Email Not Verified',
+            description: 'Please verify your email address before signing in. Check your inbox for the verification link.',
+            variant: 'destructive'
+          });
+        } else if (error.message.includes('User not found')) {
+          toast({
+            title: '❌ Account Not Found',
+            description: 'No account exists with this email address. Please sign up first.',
+            variant: 'destructive'
+          });
+        } else {
+          toast({
+            title: '❌ Login Failed',
+            description: error.message || 'Unable to sign in. Please try again.',
+            variant: 'destructive'
+          });
+        }
+        throw error;
+      }
 
       if (data.user) {
         toast({
-          title: 'Welcome back!',
-          description: 'You have successfully signed in.',
+          title: '✅ Welcome Back!',
+          description: `Successfully signed in as ${data.user.email}`,
         });
         navigate('/');
       }
     } catch (error: any) {
-      toast({
-        title: 'Login Failed',
-        description: error.message || 'Invalid email or password. Please try again.',
-        variant: 'destructive'
-      });
+      // Error already handled above
+      console.error('Login error:', error);
     } finally {
       setLoading(false);
     }
