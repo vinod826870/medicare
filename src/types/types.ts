@@ -1,5 +1,6 @@
 export type UserRole = 'user' | 'admin';
 export type OrderStatus = 'pending' | 'completed' | 'cancelled' | 'refunded';
+export type ContactStatus = 'new' | 'in_progress' | 'resolved';
 
 export interface Profile {
   id: string;
@@ -119,4 +120,24 @@ export interface PaymentVerificationResponse {
   customerEmail?: string;
   customerName?: string;
   orderUpdated?: boolean;
+}
+
+export interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  user_id: string | null;
+  status: ContactStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateContactSubmission {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  user_id?: string | null;
 }

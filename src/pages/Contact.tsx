@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
+import { contactApi } from '@/db/api';
+import type { CreateContactSubmission } from '@/types/types';
 
 const Contact = () => {
   const navigate = useNavigate();
@@ -58,9 +60,28 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Simulate sending message (in a real app, this would call an API)
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Prepare submission data
+      const submissionData: CreateContactSubmission = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
+        user_id: user?.id || null
+      };
+
+      // Save to database
+      const savedSubmission = await contactApi.createSubmission(submissionData);
       
+      if (!savedSubmission) {
+        throw new Error('Failed to save contact submission');
+      }
+
+      // Send email notification (non-blocking)
+      contactApi.sendEmailNotification(submissionData).catch(error => {
+        console.error('Email notification failed:', error);
+        // Don't show error to user - email is optional
+      });
+
       toast.success('Message sent successfully! We\'ll get back to you within 24 hours.');
       
       // Reset form
@@ -76,6 +97,7 @@ const Contact = () => {
         navigate('/');
       }, 2000);
     } catch (error) {
+      console.error('Error submitting contact form:', error);
       toast.error('Failed to send message. Please try again.');
     } finally {
       setIsSubmitting(false);

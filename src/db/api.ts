@@ -6,7 +6,9 @@ import type {
   CheckoutRequest,
   CheckoutResponse,
   PaymentVerificationRequest,
-  PaymentVerificationResponse
+  PaymentVerificationResponse,
+  ContactSubmission,
+  CreateContactSubmission
 } from '@/types/types';
 
 // Profile API
@@ -282,5 +284,80 @@ export const ordersApi = {
     }
 
     return data;
+  }
+};
+
+// Contact Submissions API
+export const contactApi = {
+  async createSubmission(submission: CreateContactSubmission): Promise<ContactSubmission | null> {
+    const { data, error } = await supabase
+      .from('contact_submissions')
+      .insert([submission])
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error creating contact submission:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async getSubmissions(): Promise<ContactSubmission[]> {
+    const { data, error } = await supabase
+      .from('contact_submissions')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching contact submissions:', error);
+      throw error;
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getUserSubmissions(userId: string): Promise<ContactSubmission[]> {
+    const { data, error } = await supabase
+      .from('contact_submissions')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching user submissions:', error);
+      throw error;
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  async updateSubmissionStatus(id: string, status: string): Promise<ContactSubmission | null> {
+    const { data, error } = await supabase
+      .from('contact_submissions')
+      .update({ status })
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error updating submission status:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async sendEmailNotification(submission: CreateContactSubmission): Promise<void> {
+    const { error } = await supabase.functions.invoke('send_contact_email', {
+      body: submission
+    });
+
+    if (error) {
+      const errorMsg = await error?.context?.text();
+      console.error('Error sending email notification:', errorMsg);
+      // Don't throw error - email is optional, submission should still succeed
+    }
   }
 };
