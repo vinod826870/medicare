@@ -63,29 +63,23 @@ const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 async function callEdgeFunction(action: string, params: Record<string, string> = {}): Promise<any> {
   try {
     const queryParams = new URLSearchParams({ action, ...params });
-    const { data, error } = await supabase.functions.invoke('fetch-medicines', {
-      body: {},
-      method: 'GET',
-    });
-
-    if (error) {
-      const errorMsg = await error?.context?.text();
-      console.error('Edge function error in fetch-medicines:', errorMsg);
-      throw new Error(errorMsg || 'Failed to fetch medicines');
-    }
-
-    // Call the edge function with query parameters
+    
+    // Call the edge function with query parameters using fetch
     const response = await fetch(
       `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-medicines?${queryParams}`,
       {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
         },
       }
     );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch from Edge Function');
+      const errorText = await response.text();
+      console.error('Edge Function error:', errorText);
+      throw new Error(`Failed to fetch from Edge Function: ${response.status}`);
     }
 
     const result = await response.json();
@@ -117,14 +111,18 @@ export const medicineApiService = {
       const now = Date.now();
       
       if (medicineCache.has(cacheKey) && (now - cacheTimestamp) < CACHE_DURATION) {
+        console.log('Using cached results for:', cacheKey);
         results = medicineCache.get(cacheKey) || [];
       } else {
+        console.log('Fetching from API for:', cacheKey);
         // Fetch from Edge Function
         if (filters?.search) {
           results = await callEdgeFunction('search', { search: filters.search });
         } else {
           results = await callEdgeFunction('popular');
         }
+        
+        console.log('API returned', results.length, 'medicines');
         
         // Cache results
         medicineCache.set(cacheKey, results);
@@ -144,6 +142,7 @@ export const medicineApiService = {
       return results;
     } catch (error) {
       console.error('Error getting medicines:', error);
+      // Return empty array instead of throwing to prevent UI crashes
       return [];
     }
   },

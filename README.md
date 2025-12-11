@@ -84,7 +84,9 @@ The entire e-commerce flow is **fully working**:
 - ✅ **Contact Support** - Contact form with FAQ section
 - ✅ **Admin Dashboard** - Manage orders and view all users (admin only)
 
+📖 **See [QUICK_START_API.md](./QUICK_START_API.md) for quick start** 🚀 **START HERE!**
 📖 **See [TEST_REAL_API.md](./TEST_REAL_API.md) for testing real API** 🧪 **TEST NOW!**
+📖 **See [API_TROUBLESHOOTING.md](./API_TROUBLESHOOTING.md) for API issues** 🔧 **FIX ISSUES!**
 📖 **See [REAL_API_INTEGRATION.md](./REAL_API_INTEGRATION.md) for API details** 🌐 **REAL NIH APIs!**
 📖 **See [STRIPE_SETUP_GUIDE.md](./STRIPE_SETUP_GUIDE.md) for FREE Stripe setup** 💳 **PERFECT FOR COLLEGE!**
 📖 **See [CORS_FIX.md](./CORS_FIX.md) for CORS error resolution** ✅ **FIXED!**
