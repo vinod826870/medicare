@@ -11,6 +11,8 @@ import { medicineApiService, type MedicineApiData } from '@/services/medicineApi
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
+const DEFAULT_MEDICINE_IMAGE = 'https://miaoda-site-img.s3cdn.medo.dev/images/d0b123ac-13ae-44fb-9df3-d9f032fe53de.jpg';
+
 const MedicineDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -18,6 +20,8 @@ const MedicineDetail = () => {
   const [medicine, setMedicine] = useState<MedicineApiData | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -27,6 +31,15 @@ const MedicineDetail = () => {
       });
     }
   }, [id]);
+
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoaded(true);
+  };
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
 
   const handleAddToCart = async () => {
     if (!user) {
@@ -81,18 +94,19 @@ const MedicineDetail = () => {
         </Button>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          <div className="aspect-square bg-muted rounded-lg overflow-hidden">
-            {medicine.image_url ? (
-              <img
-                src={medicine.image_url}
-                alt={medicine.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Pill className="w-32 h-32 text-muted-foreground" />
+          <div className="aspect-square bg-muted rounded-lg overflow-hidden relative">
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Pill className="w-32 h-32 text-muted-foreground/30 animate-pulse" />
               </div>
             )}
+            <img
+              src={imageError ? DEFAULT_MEDICINE_IMAGE : (medicine.image_url || DEFAULT_MEDICINE_IMAGE)}
+              alt={medicine.name}
+              className="w-full h-full object-cover"
+              onError={handleImageError}
+              onLoad={handleImageLoad}
+            />
           </div>
 
           <div>

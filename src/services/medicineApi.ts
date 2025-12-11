@@ -57,13 +57,41 @@ const categorizeMedicine = (route?: string[], productType?: string[]): string =>
   return 'otc';
 };
 
+// Helper function to try to get medicine image from DailyMed
+const getMedicineImage = async (brandName: string, setId?: string): Promise<string> => {
+  try {
+    // Try to get image from DailyMed API if setId is available
+    if (setId) {
+      const dailyMedUrl = `https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/${setId}/media.json`;
+      const response = await fetch(dailyMedUrl);
+      
+      if (response.ok) {
+        const data = await response.json();
+        // Get the first image if available
+        if (data.data && data.data.length > 0) {
+          const imageUrl = data.data[0].url;
+          if (imageUrl) {
+            return `https://dailymed.nlm.nih.gov${imageUrl}`;
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.log('Could not fetch image from DailyMed:', error);
+  }
+  
+  // Return default image if no image found
+  return DEFAULT_MEDICINE_IMAGE;
+};
+
 // Transform FDA API response to our format
-const transformFDAResult = (result: any, index: number): MedicineApiData => {
+const transformFDAResult = async (result: any, index: number): Promise<MedicineApiData> => {
   const brandName = result.openfda?.brand_name?.[0] || result.openfda?.generic_name?.[0] || 'Unknown Medicine';
   const genericName = result.openfda?.generic_name?.[0] || '';
   const manufacturer = result.openfda?.manufacturer_name?.[0] || 'Various Manufacturers';
   const route = result.openfda?.route;
   const productType = result.openfda?.product_type;
+  const setId = result.set_id;
   
   // Get description from purpose or indications_and_usage
   let description = '';
@@ -84,6 +112,9 @@ const transformFDAResult = (result: any, index: number): MedicineApiData => {
                  route?.join(', ') || 
                  'Consult healthcare provider';
 
+  // Try to get actual medicine image
+  const imageUrl = await getMedicineImage(brandName, setId);
+
   return {
     id: `fda-${result.id || index}`,
     name: brandName,
@@ -93,7 +124,7 @@ const transformFDAResult = (result: any, index: number): MedicineApiData => {
     manufacturer,
     dosage,
     prescription_required: isPrescriptionRequired(route, productType),
-    image_url: DEFAULT_MEDICINE_IMAGE,
+    image_url: imageUrl,
     stock_available: true,
     rating: 4.0 + Math.random(),
     reviews_count: Math.floor(Math.random() * 500) + 50
@@ -123,7 +154,12 @@ const fetchFromFDA = async (searchTerm?: string, limit: number = 50): Promise<Me
       return [];
     }
     
-    return data.results.map((result: any, index: number) => transformFDAResult(result, index));
+    // Transform results with image fetching (process in parallel but limit to avoid rate limiting)
+    const transformedResults = await Promise.all(
+      data.results.slice(0, 20).map((result: any, index: number) => transformFDAResult(result, index))
+    );
+    
+    return transformedResults;
   } catch (error) {
     console.error('Error fetching from FDA API:', error);
     return [];

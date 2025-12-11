@@ -84,6 +84,7 @@ The entire e-commerce flow is **fully working**:
 - ✅ **Contact Support** - Contact form with FAQ section
 - ✅ **Admin Dashboard** - Manage orders and view all users (admin only)
 
+📖 **See [MEDICINE_IMAGES_GUIDE.md](./MEDICINE_IMAGES_GUIDE.md) for image handling** 🖼️ **REAL API IMAGES!**
 📖 **See [STRIPE_SETUP_GUIDE.md](./STRIPE_SETUP_GUIDE.md) for FREE Stripe setup** 💳 **PERFECT FOR COLLEGE!**
 📖 **See [CORS_FIX.md](./CORS_FIX.md) for CORS error resolution** ✅ **FIXED!**
 📖 **See [TEST_EMAIL_NOW.md](./TEST_EMAIL_NOW.md) for testing instructions** ⭐ **START HERE!**

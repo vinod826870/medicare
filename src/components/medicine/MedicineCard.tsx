@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, AlertCircle, Star } from 'lucide-react';
+import { ShoppingCart, AlertCircle, Star, Pill } from 'lucide-react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,8 +11,23 @@ interface MedicineCardProps {
   onAddToCart?: (medicineId: string) => void;
 }
 
+const DEFAULT_MEDICINE_IMAGE = 'https://miaoda-site-img.s3cdn.medo.dev/images/d0b123ac-13ae-44fb-9df3-d9f032fe53de.jpg';
+
 const MedicineCard = ({ medicine, onAddToCart }: MedicineCardProps) => {
   const navigate = useNavigate();
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoaded(true);
+  };
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const displayImage = imageError ? DEFAULT_MEDICINE_IMAGE : (medicine.image_url || DEFAULT_MEDICINE_IMAGE);
 
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col">
@@ -19,11 +35,18 @@ const MedicineCard = ({ medicine, onAddToCart }: MedicineCardProps) => {
         className="relative aspect-square overflow-hidden cursor-pointer bg-muted"
         onClick={() => navigate(`/medicines/${medicine.id}`)}
       >
+        {!imageLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Pill className="w-16 h-16 text-muted-foreground/30 animate-pulse" />
+          </div>
+        )}
         <img
-          src={medicine.image_url}
+          src={displayImage}
           alt={medicine.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
+          onError={handleImageError}
+          onLoad={handleImageLoad}
         />
         {medicine.prescription_required && (
           <Badge className="absolute top-2 right-2 bg-accent">
