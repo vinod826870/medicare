@@ -233,7 +233,7 @@ const Home = () => {
             <p className="text-primary-foreground/90 mb-6 max-w-2xl mx-auto">
               Our healthcare professionals are here to assist you. Get expert advice and recommendations for your health needs.
             </p>
-            <Button size="lg" variant="secondary">
+            <Button size="lg" variant="secondary" onClick={() => navigate('/contact')}>
               Contact Support
             </Button>
           </div>

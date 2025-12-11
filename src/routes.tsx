@@ -6,6 +6,7 @@ import Cart from './pages/Cart';
 import Payment from './pages/Payment';
 import Orders from './pages/Orders';
 import PaymentSuccess from './pages/PaymentSuccess';
+import Contact from './pages/Contact';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -63,6 +64,12 @@ const routes: RouteConfig[] = [
     name: 'Payment Success',
     path: '/payment-success',
     element: <PaymentSuccess />,
+    visible: false
+  },
+  {
+    name: 'Contact',
+    path: '/contact',
+    element: <Contact />,
     visible: false
   },
   {
