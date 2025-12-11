@@ -5,16 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import MedicineCard from '@/components/medicine/MedicineCard';
-import { medicinesApi, cartApi, categoriesApi } from '@/db/api';
+import { cartApi } from '@/db/api';
+import { medicineApiService, type MedicineApiData, type MedicineCategory } from '@/services/medicineApi';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import type { MedicineWithCategory, Category } from '@/types/types';
 
 const Home = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [featuredMedicines, setFeaturedMedicines] = useState<MedicineWithCategory[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [featuredMedicines, setFeaturedMedicines] = useState<MedicineApiData[]>([]);
+  const [categories, setCategories] = useState<MedicineCategory[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -22,8 +22,8 @@ const Home = () => {
     const loadData = async () => {
       try {
         const [medicinesData, categoriesData] = await Promise.all([
-          medicinesApi.getAll(),
-          categoriesApi.getAll()
+          medicineApiService.getMedicines(),
+          medicineApiService.getCategories()
         ]);
         setFeaturedMedicines(medicinesData.slice(0, 8));
         setCategories(categoriesData);
@@ -38,7 +38,7 @@ const Home = () => {
     loadData();
   }, []);
 
-  const handleAddToCart = async (medicine: MedicineWithCategory) => {
+  const handleAddToCart = async (medicineId: string) => {
     if (!user) {
       toast.error('Please sign in to add items to cart');
       navigate('/login');
@@ -46,8 +46,9 @@ const Home = () => {
     }
 
     try {
-      await cartApi.addToCart(user.id, medicine.id, 1);
-      toast.success(`${medicine.name} added to cart`);
+      await cartApi.addToCart(user.id, medicineId, 1);
+      const medicine = featuredMedicines.find(m => m.id === medicineId);
+      toast.success(`${medicine?.name || 'Medicine'} added to cart`);
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add item to cart');

@@ -1,27 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart, Package, AlertCircle, Pill } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Package, AlertCircle, Pill, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { medicinesApi, cartApi } from '@/db/api';
+import { cartApi } from '@/db/api';
+import { medicineApiService, type MedicineApiData } from '@/services/medicineApi';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import type { MedicineWithCategory } from '@/types/types';
 
 const MedicineDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [medicine, setMedicine] = useState<MedicineWithCategory | null>(null);
+  const [medicine, setMedicine] = useState<MedicineApiData | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (id) {
-      medicinesApi.getById(id).then((data) => {
+      medicineApiService.getMedicineById(id).then((data) => {
         setMedicine(data);
         setLoading(false);
       });
@@ -99,7 +99,7 @@ const MedicineDetail = () => {
             <div className="mb-4">
               {medicine.category && (
                 <Badge variant="outline" className="mb-2">
-                  {medicine.category.name}
+                  {medicine.category}
                 </Badge>
               )}
               <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -122,11 +122,25 @@ const MedicineDetail = () => {
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
                 <Package className="w-4 h-4" />
                 <span>
-                  {medicine.stock_quantity > 0 
-                    ? `${medicine.stock_quantity} units in stock` 
+                  {medicine.stock_available 
+                    ? 'In stock' 
                     : 'Out of stock'}
                 </span>
               </div>
+              
+              {medicine.rating && (
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center gap-1">
+                    <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    <span className="font-semibold">{medicine.rating.toFixed(1)}</span>
+                  </div>
+                  {medicine.reviews_count && (
+                    <span className="text-sm text-muted-foreground">
+                      ({medicine.reviews_count} reviews)
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
 
             <Card className="mb-6">
@@ -164,7 +178,7 @@ const MedicineDetail = () => {
               </Card>
             )}
 
-            {medicine.stock_quantity > 0 ? (
+            {medicine.stock_available ? (
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="quantity" className="mb-2 block">Quantity</Label>
@@ -172,9 +186,9 @@ const MedicineDetail = () => {
                     id="quantity"
                     type="number"
                     min="1"
-                    max={medicine.stock_quantity}
+                    max="99"
                     value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, Math.min(medicine.stock_quantity, parseInt(e.target.value) || 1)))}
+                    onChange={(e) => setQuantity(Math.max(1, Math.min(99, parseInt(e.target.value) || 1)))}
                     className="w-32"
                   />
                 </div>

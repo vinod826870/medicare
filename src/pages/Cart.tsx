@@ -5,14 +5,19 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { cartApi, ordersApi } from '@/db/api';
+import { medicineApiService, type MedicineApiData } from '@/services/medicineApi';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import type { CartItemWithMedicine } from '@/types/types';
+import type { CartItem } from '@/types/types';
+
+interface CartItemWithMedicineData extends CartItem {
+  medicine?: MedicineApiData;
+}
 
 const Cart = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [cartItems, setCartItems] = useState<CartItemWithMedicine[]>([]);
+  const [cartItems, setCartItems] = useState<CartItemWithMedicineData[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingCheckout, setProcessingCheckout] = useState(false);
 
@@ -30,7 +35,21 @@ const Cart = () => {
     
     try {
       const items = await cartApi.getCartItems(user.id);
-      setCartItems(items);
+      
+      // Fetch medicine details for each cart item
+      const itemsWithMedicines = await Promise.all(
+        items.map(async (item) => {
+          try {
+            const medicine = await medicineApiService.getMedicineById(item.medicine_id);
+            return { ...item, medicine };
+          } catch (error) {
+            console.error(`Error fetching medicine ${item.medicine_id}:`, error);
+            return { ...item, medicine: undefined };
+          }
+        })
+      );
+      
+      setCartItems(itemsWithMedicines);
     } catch (error) {
       console.error('Error loading cart:', error);
       toast.error('Failed to load cart');
@@ -191,7 +210,7 @@ const Cart = () => {
                           variant="outline"
                           className="h-8 w-8"
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          disabled={item.quantity >= (item.medicine?.stock_quantity || 0)}
+                          disabled={!item.medicine?.stock_available || item.quantity >= 99}
                         >
                           <Plus className="w-4 h-4" />
                         </Button>

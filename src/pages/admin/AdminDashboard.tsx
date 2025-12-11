@@ -4,7 +4,8 @@ import { Package, Pill, ShoppingCart, Users, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { medicinesApi, ordersApi, profilesApi } from '@/db/api';
+import { ordersApi, profilesApi } from '@/db/api';
+import { medicineApiService } from '@/services/medicineApi';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const AdminDashboard = () => {
     const loadStats = async () => {
       try {
         const [medicines, orders, users] = await Promise.all([
-          medicinesApi.getAll(),
+          medicineApiService.getMedicines(),
           ordersApi.getAllOrders(),
           profilesApi.getAllProfiles()
         ]);

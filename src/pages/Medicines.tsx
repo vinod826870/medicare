@@ -8,17 +8,17 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import MedicineCard from '@/components/medicine/MedicineCard';
-import { medicinesApi, cartApi, categoriesApi } from '@/db/api';
+import { cartApi } from '@/db/api';
+import { medicineApiService, type MedicineApiData, type MedicineCategory } from '@/services/medicineApi';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import type { MedicineWithCategory, Category } from '@/types/types';
 
 const Medicines = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [medicines, setMedicines] = useState<MedicineWithCategory[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [medicines, setMedicines] = useState<MedicineApiData[]>([]);
+  const [categories, setCategories] = useState<MedicineCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
@@ -26,7 +26,7 @@ const Medicines = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    categoriesApi.getAll().then(setCategories);
+    medicineApiService.getCategories().then(setCategories);
   }, []);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const Medicines = () => {
         const filters: any = {};
         
         if (selectedCategory && selectedCategory !== 'all') {
-          filters.categoryId = selectedCategory;
+          filters.category = selectedCategory;
         }
         
         if (searchQuery) {
@@ -47,7 +47,7 @@ const Medicines = () => {
           filters.prescriptionRequired = prescriptionFilter;
         }
 
-        const data = await medicinesApi.getAll(filters);
+        const data = await medicineApiService.getMedicines(filters);
         setMedicines(data);
       } catch (error) {
         console.error('Error loading medicines:', error);
@@ -60,7 +60,7 @@ const Medicines = () => {
     loadMedicines();
   }, [selectedCategory, searchQuery, prescriptionFilter]);
 
-  const handleAddToCart = async (medicine: MedicineWithCategory) => {
+  const handleAddToCart = async (medicineId: string) => {
     if (!user) {
       toast.error('Please sign in to add items to cart');
       navigate('/login');
@@ -68,8 +68,9 @@ const Medicines = () => {
     }
 
     try {
-      await cartApi.addToCart(user.id, medicine.id, 1);
-      toast.success(`${medicine.name} added to cart`);
+      await cartApi.addToCart(user.id, medicineId, 1);
+      const medicine = medicines.find(m => m.id === medicineId);
+      toast.success(`${medicine?.name || 'Medicine'} added to cart`);
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add item to cart');
