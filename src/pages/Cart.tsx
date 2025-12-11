@@ -90,28 +90,37 @@ const Cart = () => {
 
     setProcessingCheckout(true);
     try {
-      const checkoutItems = cartItems.map(item => ({
-        name: item.medicine?.name || 'Unknown',
-        price: item.medicine?.price || 0,
-        quantity: item.quantity,
-        image_url: item.medicine?.image_url || undefined
-      }));
+      // Calculate total amount
+      const totalAmount = cartItems.reduce(
+        (sum, item) => sum + (item.medicine?.price || 0) * item.quantity,
+        0
+      ) + shipping;
 
-      const response = await ordersApi.createCheckout({
-        items: checkoutItems,
-        currency: 'usd',
-        payment_method_types: ['card']
+      // Create order directly without payment processing
+      const order = await ordersApi.createOrder({
+        user_id: user.id,
+        total_amount: totalAmount,
+        status: 'pending',
+        shipping_address: 'Default Address', // In a real app, collect this from user
+        items: cartItems.map(item => ({
+          medicine_id: item.medicine_id,
+          medicine_name: item.medicine?.name || 'Unknown Medicine',
+          quantity: item.quantity,
+          price_at_purchase: item.medicine?.price || 0
+        }))
       });
 
-      window.open(response.url, '_blank');
-      
+      // Clear cart after successful order creation
       await cartApi.clearCart(user.id);
       setCartItems([]);
       
-      toast.success('Redirecting to payment...');
+      toast.success('Order placed successfully!');
+      
+      // Redirect to orders page
+      navigate('/orders');
     } catch (error) {
-      console.error('Error creating checkout:', error);
-      toast.error('Failed to create checkout session. Please ensure STRIPE_SECRET_KEY is configured.');
+      console.error('Error creating order:', error);
+      toast.error('Failed to place order. Please try again.');
     } finally {
       setProcessingCheckout(false);
     }

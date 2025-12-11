@@ -157,6 +157,64 @@ export const cartApi = {
 
 // Orders API
 export const ordersApi = {
+  async createOrder(orderData: {
+    user_id: string;
+    total_amount: number;
+    status: 'pending' | 'completed' | 'cancelled' | 'refunded';
+    shipping_address: string;
+    items: Array<{
+      medicine_id: string;
+      medicine_name: string;
+      quantity: number;
+      price_at_purchase: number;
+    }>;
+  }): Promise<Order> {
+    // Create the order
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .insert({
+        user_id: orderData.user_id,
+        total_amount: orderData.total_amount,
+        currency: 'usd',
+        status: orderData.status,
+        shipping_address: orderData.shipping_address,
+        items: orderData.items.map(item => ({
+          name: item.medicine_name,
+          price: item.price_at_purchase,
+          quantity: item.quantity
+        }))
+      })
+      .select()
+      .single();
+
+    if (orderError) {
+      console.error('Error creating order:', orderError);
+      throw orderError;
+    }
+
+    // Create order items
+    const orderItems = orderData.items.map(item => ({
+      order_id: order.id,
+      medicine_id: item.medicine_id,
+      medicine_name: item.medicine_name,
+      quantity: item.quantity,
+      price_at_purchase: item.price_at_purchase
+    }));
+
+    const { error: itemsError } = await supabase
+      .from('order_items')
+      .insert(orderItems);
+
+    if (itemsError) {
+      console.error('Error creating order items:', itemsError);
+      // Try to delete the order if items creation failed
+      await supabase.from('orders').delete().eq('id', order.id);
+      throw itemsError;
+    }
+
+    return order;
+  },
+
   async getUserOrders(userId: string): Promise<Order[]> {
     const { data, error} = await supabase
       .from('orders')
