@@ -1,8 +1,20 @@
 # MediCare Online Pharmacy
 
+## 🚀 Quick Start
+
+### ⚠️ IMPORTANT: First Time Setup
+**You need to register an account before you can sign in!**
+
+1. **Register**: Navigate to `/register` and create your account
+2. **First User = Admin**: The first person to register automatically becomes an administrator
+3. **Sign In**: Go to `/login` and enter your credentials
+4. **Start Shopping**: Browse and search for real medicines from the FDA database
+
+📖 **See [QUICK_START.md](./QUICK_START.md) for detailed setup instructions**
+
 ## 🎉 Real Medicine API Integration
 
-This application now uses **real medicine data** from the **OpenFDA API** - a free, public database maintained by the U.S. Food and Drug Administration.
+This application uses **real medicine data** from the **OpenFDA API** - a free, public database maintained by the U.S. Food and Drug Administration.
 
 ### ✨ Features
 - 🔍 **Search Real Medicines**: Search for Tylenol, Naproxen, Aspirin, Ibuprofen, and thousands more
@@ -10,6 +22,7 @@ This application now uses **real medicine data** from the **OpenFDA API** - a fr
 - 🏥 **Comprehensive Database**: Access 100,000+ prescription and OTC medicines
 - 💯 **Completely Free**: No API key required, no subscription fees
 - ⚡ **Smart Caching**: Fast performance with intelligent caching
+- 🔐 **User Authentication**: Secure login with role-based access control
 
 ### 🔎 Try Searching For:
 - Tylenol (pain relief)
@@ -20,7 +33,10 @@ This application now uses **real medicine data** from the **OpenFDA API** - a fr
 - Metformin (diabetes)
 - Omeprazole (acid reflux)
 
-📖 **See [FDA_API_INTEGRATION.md](./FDA_API_INTEGRATION.md) for complete documentation**
+### 📚 Documentation
+- **Quick Start**: [QUICK_START.md](./QUICK_START.md) - Get started in 3 steps
+- **Authentication**: [AUTHENTICATION_GUIDE.md](./AUTHENTICATION_GUIDE.md) - Complete auth guide
+- **FDA API**: [FDA_API_INTEGRATION.md](./FDA_API_INTEGRATION.md) - API integration details
 
 ## Project Info
 

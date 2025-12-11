@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { LoginPanel } from 'miaoda-auth-react';
 import { supabase } from '@/db/supabase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Pill } from 'lucide-react';
 
 const Login = () => {
@@ -39,6 +40,14 @@ const Login = () => {
               loginType="password"
               onLoginSuccess={async () => { navigate('/'); }}
             />
+            <div className="mt-4 text-center">
+              <p className="text-sm text-muted-foreground">
+                Don't have an account?{' '}
+                <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/register')}>
+                  Sign up
+                </Button>
+              </p>
+            </div>
           </CardContent>
         </Card>
 
