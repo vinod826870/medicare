@@ -6,19 +6,20 @@ An online medicine platform that enables users to conveniently browse, search, a
 \n## 3. Core Features\n
 ### 3.1 User Features
 - **User Registration & Login**: Allow users to create accounts and securely log in to access personalized services
-- **Medicine Search & Browse**: Enable users to search for medicines by name, category, or symptoms, and browse through organized medicine catalogs retrieved from external API
-- **Shopping Cart Management**: Users can add medicines to cart, modify quantities, and remove items before checkout
-- **Order Management**: Users can place orders, view order history, track order status, and manage their purchases
-- **Contact Form**: Users can submit inquiries or feedback through a contact form. Form submissions will be stored in the database and automatically sent via email to vinod826870@gmail.com
-\n### 3.2 Admin Features
+- **Medicine Search & Browse**: Enable users to search for medicines by name, category, or symptoms, and browse through organized medicine catalogs retrieved from external API. Each medicine listing must display the product image fetched from the API\n- **Shopping Cart Management**: Users can add medicines to cart, modify quantities, and remove items before checkout\n- **Order Management**: Users can place orders, view order history, track order status, and manage their purchases\n- **Contact Form**: Users can submit inquiries or feedback through a contact form. Form submissions will be stored in the database and automatically sent via email to vinod826870@gmail.com
+
+### 3.2 Admin Features
 - **Stock Management**: Administrators can monitor inventory status and manage stock information synchronized from external API
 - **Order Processing**: View and manage customer orders, update order status
 - **Contact Form Management**: View and manage user inquiries submitted through the contact form
 
-## 4. Medicine Data Source
-- Medicine information (product details, pricing, availability, categories) will be retrieved through external pharmacy API integration
-- Reference API: PharmEasy or similar pharmacy API services
-- Real-time data synchronization to ensure up-to-date medicine information and stock availability\n
+## 4. Medicine Data Source\n- **Real API Integration Required**: Medicine information must be fetched from a working, real-world pharmacy API that provides actual medicine data\n- **Required Data Fields**: Product name, description, pricing, availability, categories, and **product images**
+- **Image Handling**: Each medicine must include a product image URL from the API response, which will be displayed in the medicine listings and detail pages
+- **Recommended APIs**: \n  - 1mg API (https://www.1mg.com)\n  - PharmEasy API\n  - Netmeds API
+  - Or any other working pharmacy API that provides medicine data with images
+- **No Hardcoded Data**: All medicine information must be dynamically fetched from the API; hardcoded or mock data is not acceptable
+- **Real-time Synchronization**: Ensure up-to-date medicine information, stock availability, and product images through API calls
+
 ## 5. Medicine Categories
 The platform will cover major medicine categories including:
 - Prescription medicines
@@ -28,7 +29,8 @@ The platform will cover major medicine categories including:
 - Medical devices and supplies
 
 ## 6. Payment Configuration
-\n### 6.1 Stripe Payment Integration
+
+### 6.1 Stripe Payment Integration
 - **Payment Method**: Stripe payment gateway integration for secure online transactions
 - **STRIPE_SECRET_KEY**: The Stripe secret key should be securely stored in environment variables for payment processing authentication
 - **Usage**: This key enables the platform to process payments, handle refunds, and manage transaction records through Stripe API
@@ -50,9 +52,10 @@ The platform will cover major medicine categories including:
 - Rounded corners (8px radius) for cards and buttons creating a friendly, approachable feel
 - Subtle shadows (02px 8px rgba(0,0,0,0.1)) for depth and hierarchy
 - Clean, sans-serif typography for easy readability
-- Medicine product cards with clear images and essential information
-\n### 8.3 Layout
-- Card-based layout for medicine listings with grid display for easy browsing
+- Medicine product cards with clear images fetched from API and essential information
+- Image placeholders with loading states while API images are being fetched
+
+### 8.3 Layout\n- Card-based layout for medicine listings with grid display for easy browsing, each card prominently featuring the medicine image from API
 - Fixed navigation bar at top for quick access to search, cart, and user account
 - Clear categorization with sidebar filters for efficient medicine discovery
 - Spacious whitespace ensuring content clarity and reducing visual clutter
