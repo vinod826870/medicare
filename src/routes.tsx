@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Medicines from './pages/Medicines';
 import MedicineDetail from './pages/MedicineDetail';
 import Cart from './pages/Cart';
+import Payment from './pages/Payment';
 import Orders from './pages/Orders';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Profile from './pages/Profile';
@@ -44,6 +45,12 @@ const routes: RouteConfig[] = [
     name: 'Cart',
     path: '/cart',
     element: <Cart />,
+    visible: false
+  },
+  {
+    name: 'Payment',
+    path: '/payment',
+    element: <Payment />,
     visible: false
   },
   {

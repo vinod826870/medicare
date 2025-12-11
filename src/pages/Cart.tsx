@@ -4,7 +4,7 @@ import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { cartApi, ordersApi } from '@/db/api';
+import { cartApi } from '@/db/api';
 import { medicineApiService, type MedicineApiData } from '@/services/medicineApi';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -19,7 +19,6 @@ const Cart = () => {
   const { user } = useAuth();
   const [cartItems, setCartItems] = useState<CartItemWithMedicineData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [processingCheckout, setProcessingCheckout] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -85,45 +84,28 @@ const Cart = () => {
     }
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (!user || cartItems.length === 0) return;
 
-    setProcessingCheckout(true);
-    try {
-      // Calculate total amount
-      const totalAmount = cartItems.reduce(
-        (sum, item) => sum + (item.medicine?.price || 0) * item.quantity,
-        0
-      ) + shipping;
+    // Calculate total amount
+    const totalAmount = cartItems.reduce(
+      (sum, item) => sum + (item.medicine?.price || 0) * item.quantity,
+      0
+    ) + shipping;
 
-      // Create order directly without payment processing
-      const order = await ordersApi.createOrder({
-        user_id: user.id,
-        total_amount: totalAmount,
-        status: 'pending',
-        shipping_address: 'Default Address', // In a real app, collect this from user
+    // Navigate to payment page with order data
+    navigate('/payment', {
+      state: {
         items: cartItems.map(item => ({
           medicine_id: item.medicine_id,
           medicine_name: item.medicine?.name || 'Unknown Medicine',
           quantity: item.quantity,
           price_at_purchase: item.medicine?.price || 0
-        }))
-      });
-
-      // Clear cart after successful order creation
-      await cartApi.clearCart(user.id);
-      setCartItems([]);
-      
-      toast.success('Order placed successfully!');
-      
-      // Redirect to orders page
-      navigate('/orders');
-    } catch (error) {
-      console.error('Error creating order:', error);
-      toast.error('Failed to place order. Please try again.');
-    } finally {
-      setProcessingCheckout(false);
-    }
+        })),
+        total_amount: totalAmount,
+        shipping_address: 'Default Address'
+      }
+    });
   };
 
   const subtotal = cartItems.reduce(
@@ -275,20 +257,13 @@ const Cart = () => {
                   size="lg"
                   className="w-full"
                   onClick={handleCheckout}
-                  disabled={processingCheckout}
                 >
-                  {processingCheckout ? (
-                    'Processing...'
-                  ) : (
-                    <>
-                      Proceed to Checkout
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </>
-                  )}
+                  Proceed to Checkout
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center mt-4">
-                  Secure payment powered by Stripe
+                  🔒 Secure checkout with multiple payment options
                 </p>
               </CardContent>
             </Card>
