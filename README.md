@@ -3,14 +3,26 @@
 ## 🚀 Quick Start
 
 ### ⚠️ IMPORTANT: First Time Setup
-**You need to register an account before you can sign in!**
+**Custom authentication forms with visible input fields and English language!**
 
-1. **Register**: Navigate to `/register` and create your account
+1. **Register**: Navigate to `/register` and fill out the form:
+   - Full Name
+   - Email
+   - Password (min 6 characters)
+   - Confirm Password
 2. **First User = Admin**: The first person to register automatically becomes an administrator
-3. **Sign In**: Go to `/login` and enter your credentials
+3. **Sign In**: Go to `/login` and enter your email and password
 4. **Start Shopping**: Browse and search for real medicines from the FDA database
 
-📖 **See [QUICK_START.md](./QUICK_START.md) for detailed setup instructions**
+### ✨ New Authentication Features
+- ✅ **Visible Input Fields** - All form fields display properly
+- ✅ **English Language** - No more Chinese text
+- ✅ **Full Name Field** - Your name is saved to the database
+- ✅ **Password Confirmation** - Ensures you typed your password correctly
+- ✅ **Clear Error Messages** - Helpful feedback in English
+- ✅ **Loading States** - Visual feedback during submission
+
+📖 **See [CUSTOM_AUTH_IMPLEMENTATION.md](./CUSTOM_AUTH_IMPLEMENTATION.md) for complete authentication details**
 
 ## 🎉 Real Medicine API Integration
 
