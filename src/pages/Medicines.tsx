@@ -175,7 +175,7 @@ const Medicines = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 @md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
               <Card key={i} className="h-96 animate-pulse">
                 <div className="aspect-square bg-muted" />
@@ -199,7 +199,7 @@ const Medicines = () => {
             </Button>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 @md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {medicines.map((medicine) => (
               <MedicineCard
                 key={medicine.id}
