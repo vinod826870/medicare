@@ -84,6 +84,7 @@ The entire e-commerce flow is **fully working**:
 - ✅ **Contact Support** - Contact form with FAQ section
 - ✅ **Admin Dashboard** - Manage orders and view all users (admin only)
 
+📖 **See [REAL_API_INTEGRATION.md](./REAL_API_INTEGRATION.md) for API details** 🌐 **REAL NIH APIs!**
 📖 **See [MEDICINE_DATABASE_GUIDE.md](./MEDICINE_DATABASE_GUIDE.md) for medicine database** 💊 **30 REAL MEDICINES!**
 📖 **See [MEDICINE_IMAGES_GUIDE.md](./MEDICINE_IMAGES_GUIDE.md) for image handling** 🖼️ **REAL API IMAGES!**
 📖 **See [STRIPE_SETUP_GUIDE.md](./STRIPE_SETUP_GUIDE.md) for FREE Stripe setup** 💳 **PERFECT FOR COLLEGE!**
@@ -94,22 +95,29 @@ The entire e-commerce flow is **fully working**:
 📖 **See [EMAIL_SETUP_GUIDE.md](./EMAIL_SETUP_GUIDE.md) for detailed setup guide**
 📖 **See [PAYMENT_DEMO_GUIDE.md](./PAYMENT_DEMO_GUIDE.md) for payment demo**
 
-## 🎉 Comprehensive Medicine Database
+## 🌐 Real Medicine API Integration
 
-This application includes a **comprehensive database of 30 real medicines** with:
+This application uses **REAL APIs** from the U.S. National Library of Medicine (NIH):
 
-- ✅ **Real medicine names** - Paracetamol, Ibuprofen, Aspirin, Amoxicillin, and more
-- ✅ **High-quality images** - Professional pharmaceutical photography
-- ✅ **Detailed descriptions** - Complete medicine information
-- ✅ **Accurate dosage** - Proper usage instructions
-- ✅ **Smart search** - Find any medicine instantly
-- ✅ **Category filters** - Browse by type (Prescription, OTC, Supplements, Personal Care)
+### APIs Used:
+- ✅ **RxNorm API** - Comprehensive drug database with thousands of medicines
+- ✅ **RxImage API** - Actual pharmaceutical product images
+- ✅ **100% Real Data** - No dummy or fake data
+- ✅ **Live API Calls** - Fresh data from NIH servers
+- ✅ **Free & Public** - No API key required
 
 ### 🔍 Try These Searches:
-- Search for **"paracetamol"** - ✅ Works!
-- Search for **"ibuprofen"** - ✅ Works!
-- Search for **"vitamin"** - ✅ Works!
-- Search for **"pain"** - ✅ Works!
+- Search for **"paracetamol"** - ✅ Real results from NIH!
+- Search for **"ibuprofen"** - ✅ Real results from NIH!
+- Search for **"aspirin"** - ✅ Real results from NIH!
+- Search for **"amoxicillin"** - ✅ Real results from NIH!
+
+### Features:
+- 🌐 **Real-time API integration** with NIH databases
+- 🖼️ **Actual drug images** from RxImage API
+- 🔍 **Search any medicine** and get real results
+- 💊 **Thousands of medicines** available
+- ⚡ **Smart caching** for fast performance
 
 ---
 
