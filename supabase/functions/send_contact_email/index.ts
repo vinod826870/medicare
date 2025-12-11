@@ -14,7 +14,17 @@ interface EmailRequest {
   html: string;
 }
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
 Deno.serve(async (req: Request) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders });
+  }
+
   console.log('=== send_contact_email Edge Function called ===');
   
   try {
@@ -27,7 +37,10 @@ Deno.serve(async (req: Request) => {
       console.error('Validation failed: Missing required fields');
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
       );
     }
 
@@ -196,7 +209,10 @@ Deno.serve(async (req: Request) => {
           message: 'Email sent successfully',
           emailId: resendData.id
         }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
+        { 
+          status: 200, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
       );
     } else {
       // If no API key, log the email content (for development/testing)
@@ -215,7 +231,10 @@ Deno.serve(async (req: Request) => {
           message: 'Email logged (no API key configured)',
           note: 'Configure RESEND_API_KEY to send actual emails'
         }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
+        { 
+          status: 200, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
       );
     }
   } catch (error) {
@@ -224,7 +243,10 @@ Deno.serve(async (req: Request) => {
       JSON.stringify({ 
         error: error instanceof Error ? error.message : 'Unknown error occurred' 
       }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
     );
   }
 });

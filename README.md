@@ -84,6 +84,7 @@ The entire e-commerce flow is **fully working**:
 - ✅ **Contact Support** - Contact form with FAQ section
 - ✅ **Admin Dashboard** - Manage orders and view all users (admin only)
 
+📖 **See [CORS_FIX.md](./CORS_FIX.md) for CORS error resolution** ✅ **FIXED!**
 📖 **See [TEST_EMAIL_NOW.md](./TEST_EMAIL_NOW.md) for testing instructions** ⭐ **START HERE!**
 📖 **See [EMAIL_TROUBLESHOOTING.md](./EMAIL_TROUBLESHOOTING.md) for debugging help** 🔧
 📖 **See [EMAIL_READY.md](./EMAIL_READY.md) for email setup confirmation**
