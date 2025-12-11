@@ -349,15 +349,24 @@ export const contactApi = {
     return data;
   },
 
-  async sendEmailNotification(submission: CreateContactSubmission): Promise<void> {
-    const { error } = await supabase.functions.invoke('send_contact_email', {
-      body: submission
-    });
+  async sendEmailNotification(submission: CreateContactSubmission): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { data, error } = await supabase.functions.invoke('send_contact_email', {
+        body: submission
+      });
 
-    if (error) {
-      const errorMsg = await error?.context?.text();
-      console.error('Error sending email notification:', errorMsg);
-      // Don't throw error - email is optional, submission should still succeed
+      if (error) {
+        const errorMsg = await error?.context?.text().catch(() => error.message || 'Unknown error');
+        console.error('Error sending email notification:', errorMsg);
+        console.error('Full error object:', error);
+        return { success: false, error: errorMsg };
+      }
+
+      console.log('Email notification sent successfully:', data);
+      return { success: true };
+    } catch (err) {
+      console.error('Exception in sendEmailNotification:', err);
+      return { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
     }
   }
 };

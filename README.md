@@ -84,11 +84,11 @@ The entire e-commerce flow is **fully working**:
 - ✅ **Contact Support** - Contact form with FAQ section
 - ✅ **Admin Dashboard** - Manage orders and view all users (admin only)
 
-📖 **See [EMAIL_READY.md](./EMAIL_READY.md) for testing instructions** ⭐ **EMAIL IS LIVE!**
-📖 **See [EMAIL_SETUP_GUIDE.md](./EMAIL_SETUP_GUIDE.md) for email setup details**
-📖 **See [CONTACT_FORM_DATABASE_EMAIL.md](./CONTACT_FORM_DATABASE_EMAIL.md) for complete documentation**
+📖 **See [TEST_EMAIL_NOW.md](./TEST_EMAIL_NOW.md) for testing instructions** ⭐ **START HERE!**
+📖 **See [EMAIL_TROUBLESHOOTING.md](./EMAIL_TROUBLESHOOTING.md) for debugging help** 🔧
+📖 **See [EMAIL_READY.md](./EMAIL_READY.md) for email setup confirmation**
+📖 **See [EMAIL_SETUP_GUIDE.md](./EMAIL_SETUP_GUIDE.md) for detailed setup guide**
 📖 **See [PAYMENT_DEMO_GUIDE.md](./PAYMENT_DEMO_GUIDE.md) for payment demo**
-📖 **See [CUSTOM_AUTH_IMPLEMENTATION.md](./CUSTOM_AUTH_IMPLEMENTATION.md) for authentication details**
 
 ## 🎉 Real Medicine API Integration
 

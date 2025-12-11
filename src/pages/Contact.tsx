@@ -76,13 +76,18 @@ const Contact = () => {
         throw new Error('Failed to save contact submission');
       }
 
-      // Send email notification (non-blocking)
-      contactApi.sendEmailNotification(submissionData).catch(error => {
-        console.error('Email notification failed:', error);
-        // Don't show error to user - email is optional
-      });
+      console.log('Contact submission saved to database:', savedSubmission);
 
-      toast.success('Message sent successfully! We\'ll get back to you within 24 hours.');
+      // Send email notification
+      const emailResult = await contactApi.sendEmailNotification(submissionData);
+      
+      if (emailResult.success) {
+        console.log('Email notification sent successfully');
+        toast.success('Message sent successfully! Email notification sent to admin.');
+      } else {
+        console.error('Email notification failed:', emailResult.error);
+        toast.success('Message saved! (Email notification pending)');
+      }
       
       // Reset form
       setFormData({
