@@ -36,15 +36,16 @@ const MedicineCard = ({ medicine, onAddToCart }: MedicineCardProps) => {
         onClick={() => navigate(`/medicines/${medicine.id}`)}
       >
         {!imageLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center bg-muted">
             <Pill className="w-16 h-16 text-muted-foreground/30 animate-pulse" />
           </div>
         )}
         <img
           src={displayImage}
           alt={medicine.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${!imageLoaded ? 'opacity-0' : 'opacity-100'}`}
           loading="lazy"
+          decoding="async"
           onError={handleImageError}
           onLoad={handleImageLoad}
         />
