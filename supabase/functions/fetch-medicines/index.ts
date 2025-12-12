@@ -24,22 +24,26 @@ interface MedicineData {
 }
 
 // Helper function to get medicine image from RxImage API or OpenFDA
-async function getMedicineImage(rxcui?: string, ndc?: string): Promise<string> {
+async function getMedicineImage(rxcui?: string, ndc?: string, name?: string): Promise<string> {
   // Try RxImage API first if we have RxCUI
   if (rxcui) {
     try {
       const imageUrl = `${RXIMAGE_API_BASE}/rximage/1/rxnav?resolution=600&rxcui=${rxcui}`;
-      const response = await fetch(imageUrl);
+      const response = await fetch(imageUrl, { 
+        signal: AbortSignal.timeout(3000) // 3 second timeout
+      });
       
       if (response.ok) {
         const data = await response.json();
         
         if (data.nlmRxImages && data.nlmRxImages.length > 0) {
-          return data.nlmRxImages[0].imageUrl;
+          const imageUrl = data.nlmRxImages[0].imageUrl;
+          console.log('✅ Found RxImage for', name || rxcui, ':', imageUrl);
+          return imageUrl;
         }
       }
     } catch (error) {
-      console.log('Could not fetch image from RxImage for rxcui:', rxcui);
+      console.log('⚠️ Could not fetch image from RxImage for', name || rxcui);
     }
   }
   
@@ -48,20 +52,25 @@ async function getMedicineImage(rxcui?: string, ndc?: string): Promise<string> {
     try {
       const cleanNdc = ndc.replace(/-/g, '');
       const imageUrl = `${OPENFDA_API_BASE}/label.json?search=openfda.product_ndc:"${cleanNdc}"&limit=1`;
-      const response = await fetch(imageUrl);
+      const response = await fetch(imageUrl, {
+        signal: AbortSignal.timeout(3000) // 3 second timeout
+      });
       
       if (response.ok) {
         const data = await response.json();
         if (data.results && data.results[0]?.openfda?.image) {
-          return data.results[0].openfda.image[0];
+          const imageUrl = data.results[0].openfda.image[0];
+          console.log('✅ Found OpenFDA image for', name || ndc, ':', imageUrl);
+          return imageUrl;
         }
       }
     } catch (error) {
-      console.log('Could not fetch image from OpenFDA for ndc:', ndc);
+      console.log('⚠️ Could not fetch image from OpenFDA for', name || ndc);
     }
   }
   
   // Return default medicine image if no image found
+  console.log('❌ No image found for', name || rxcui || ndc, '- using default');
   return 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=80';
 }
 
@@ -162,7 +171,7 @@ async function searchOpenFDA(searchTerm: string): Promise<MedicineData[]> {
       const rxcui = await getRxCUIFromName(genericName || brandName);
       
       // Get image
-      const imageUrl = await getMedicineImage(rxcui || undefined, ndc);
+      const imageUrl = await getMedicineImage(rxcui || undefined, ndc, brandName);
       
       // Categorize
       const category = categorizeMedicine(brandName);
@@ -225,7 +234,7 @@ async function searchRxNorm(searchTerm: string): Promise<MedicineData[]> {
           const name = concept.name;
           const tty = concept.tty;
           
-          const imageUrl = await getMedicineImage(rxcui);
+          const imageUrl = await getMedicineImage(rxcui, undefined, name);
           const category = categorizeMedicine(name, tty);
           
           const medicine: MedicineData = {
@@ -288,7 +297,7 @@ async function searchDailyMed(searchTerm: string): Promise<MedicineData[]> {
       const rxcui = await getRxCUIFromName(name);
       
       // Get image
-      const imageUrl = await getMedicineImage(rxcui || undefined);
+      const imageUrl = await getMedicineImage(rxcui || undefined, undefined, name);
       
       // Categorize
       const category = categorizeMedicine(name);

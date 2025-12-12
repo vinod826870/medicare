@@ -19,15 +19,26 @@ const MedicineCard = ({ medicine, onAddToCart }: MedicineCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleImageError = () => {
+    console.log('❌ Image failed to load for:', medicine.name, 'URL:', medicine.image_url);
     setImageError(true);
     setImageLoaded(true);
   };
 
   const handleImageLoad = () => {
+    console.log('✅ Image loaded successfully for:', medicine.name, 'URL:', medicine.image_url);
     setImageLoaded(true);
   };
 
   const displayImage = imageError ? DEFAULT_MEDICINE_IMAGE : (medicine.image_url || DEFAULT_MEDICINE_IMAGE);
+  
+  // Log medicine data for debugging
+  console.log('Medicine Card:', {
+    name: medicine.name,
+    image_url: medicine.image_url,
+    rxcui: medicine.rxcui,
+    hasImage: !!medicine.image_url,
+    isDefault: medicine.image_url === DEFAULT_MEDICINE_IMAGE
+  });
 
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col">
