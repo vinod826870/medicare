@@ -434,14 +434,19 @@ async function getPopularMedicines(): Promise<MedicineData[]> {
 }
 
 Deno.serve(async (req: Request) => {
-  // Handle CORS
+  // CORS headers for all responses
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, apikey, x-client-info',
+    'Access-Control-Max-Age': '86400',
+  };
+
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
+      status: 204,
+      headers: corsHeaders,
     });
   }
 
@@ -469,16 +474,17 @@ Deno.serve(async (req: Request) => {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
+            ...corsHeaders,
           },
         }
       );
     }
 
     return new Response(JSON.stringify({ success: true, data: result }), {
+      status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        ...corsHeaders,
       },
     });
   } catch (error) {
@@ -493,7 +499,7 @@ Deno.serve(async (req: Request) => {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
+          ...corsHeaders,
         },
       }
     );
