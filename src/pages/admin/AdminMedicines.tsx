@@ -27,8 +27,8 @@ const AdminMedicines = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const medicinesData = await medicineApiService.getMedicines();
-      setMedicines(medicinesData);
+      const result = await medicineApiService.getMedicines({ pageSize: 100 });
+      setMedicines(result.data);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {

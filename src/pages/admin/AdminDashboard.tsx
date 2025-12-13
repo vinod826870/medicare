@@ -40,7 +40,7 @@ const AdminDashboard = () => {
         const pending = orders.filter(o => o.status === 'pending').length;
 
         setStats({
-          totalMedicines: medicines.length,
+          totalMedicines: medicines.count || medicines.data?.length || 0,
           totalOrders: orders.length,
           totalUsers: users.length,
           totalRevenue: revenue / 100,

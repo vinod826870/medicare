@@ -25,8 +25,8 @@ const Home = () => {
         const categoriesData = await medicineApiService.getCategories();
         setCategories(categoriesData);
         
-        // Load medicines in background
-        medicineApiService.getMedicines().then(medicinesData => {
+        // Load featured medicines in background
+        medicineApiService.getFeaturedMedicines(8).then(medicinesData => {
           setFeaturedMedicines(medicinesData);
           setLoading(false);
         }).catch(error => {

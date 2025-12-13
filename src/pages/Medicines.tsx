@@ -24,6 +24,10 @@ const Medicines = () => {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
   const [prescriptionFilter, setPrescriptionFilter] = useState<boolean | undefined>(undefined);
   const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     medicineApiService.getCategories().then(setCategories);
@@ -32,8 +36,12 @@ const Medicines = () => {
   useEffect(() => {
     const loadMedicines = async () => {
       setLoading(true);
+      setCurrentPage(1);
       try {
-        const filters: any = {};
+        const filters: any = {
+          page: 1,
+          pageSize: 20
+        };
         
         if (selectedCategory && selectedCategory !== 'all') {
           filters.category = selectedCategory;
@@ -47,8 +55,10 @@ const Medicines = () => {
           filters.prescriptionRequired = prescriptionFilter;
         }
 
-        const data = await medicineApiService.getMedicines(filters);
-        setMedicines(data);
+        const result = await medicineApiService.getMedicines(filters);
+        setMedicines(result.data);
+        setTotalCount(result.count);
+        setHasMore(result.hasMore);
       } catch (error) {
         console.error('Error loading medicines:', error);
         toast.error('Failed to load medicines');
@@ -59,6 +69,41 @@ const Medicines = () => {
 
     loadMedicines();
   }, [selectedCategory, searchQuery, prescriptionFilter]);
+
+  const loadMoreMedicines = async () => {
+    if (loadingMore || !hasMore) return;
+    
+    setLoadingMore(true);
+    try {
+      const nextPage = currentPage + 1;
+      const filters: any = {
+        page: nextPage,
+        pageSize: 20
+      };
+      
+      if (selectedCategory && selectedCategory !== 'all') {
+        filters.category = selectedCategory;
+      }
+      
+      if (searchQuery) {
+        filters.search = searchQuery;
+      }
+      
+      if (prescriptionFilter !== undefined) {
+        filters.prescriptionRequired = prescriptionFilter;
+      }
+
+      const result = await medicineApiService.getMedicines(filters);
+      setMedicines(prev => [...prev, ...result.data]);
+      setCurrentPage(nextPage);
+      setHasMore(result.hasMore);
+    } catch (error) {
+      console.error('Error loading more medicines:', error);
+      toast.error('Failed to load more medicines');
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   const handleAddToCart = async (medicineId: string) => {
     if (!user) {
@@ -170,7 +215,7 @@ const Medicines = () => {
       <div className="max-w-7xl mx-auto px-4 xl:px-6 py-8">
         <div className="flex items-center justify-between mb-6">
           <p className="text-muted-foreground">
-            {loading ? 'Loading...' : `${medicines.length} medicine${medicines.length !== 1 ? 's' : ''} found`}
+            {loading ? 'Loading...' : `Showing ${medicines.length} of ${totalCount} medicine${totalCount !== 1 ? 's' : ''}`}
           </p>
         </div>
 
@@ -199,15 +244,30 @@ const Medicines = () => {
             </Button>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {medicines.map((medicine) => (
-              <MedicineCard
-                key={medicine.id}
-                medicine={medicine}
-                onAddToCart={handleAddToCart}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {medicines.map((medicine) => (
+                <MedicineCard
+                  key={medicine.id}
+                  medicine={medicine}
+                  onAddToCart={handleAddToCart}
+                />
+              ))}
+            </div>
+            
+            {hasMore && (
+              <div className="flex justify-center mt-8">
+                <Button
+                  onClick={loadMoreMedicines}
+                  disabled={loadingMore}
+                  size="lg"
+                  variant="outline"
+                >
+                  {loadingMore ? 'Loading...' : `Load More (${totalCount - medicines.length} remaining)`}
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

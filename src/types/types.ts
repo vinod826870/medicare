@@ -141,3 +141,18 @@ export interface CreateContactSubmission {
   message: string;
   user_id?: string | null;
 }
+
+// Medicine Data from Supabase table
+export interface MedicineData {
+  id: number;
+  name: string;
+  price: number | null;
+  Is_discontinued: boolean | null;
+  manufacturer_name: string | null;
+  type: string | null;
+  pack_size_label: string | null;
+  short_composition1: string | null;
+  salt_composition: string | null;
+  side_effects: string | null;
+  drug_interactions: string | null;
+}
