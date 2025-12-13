@@ -147,7 +147,7 @@ export interface MedicineData {
   id: number;
   name: string;
   price: number | null;
-  Is_discontinued: boolean | null;
+  is_discontinued: boolean | null;
   manufacturer_name: string | null;
   type: string | null;
   pack_size_label: string | null;

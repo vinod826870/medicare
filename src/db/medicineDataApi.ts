@@ -145,7 +145,7 @@ export async function getFeaturedMedicines(limit: number = 8): Promise<MedicineD
       .from('medicine_data')
       .select('*')
       .not('price', 'is', null)
-      .or('Is_discontinued.is.null,Is_discontinued.eq.false')
+      .or('is_discontinued.is.null,is_discontinued.eq.false')
       .order('id', { ascending: true })
       .limit(limit * 5); // Get more to randomize
 
@@ -181,7 +181,7 @@ export async function getMedicineStats(): Promise<{
     const { count: discontinued } = await supabase
       .from('medicine_data')
       .select('*', { count: 'exact', head: true })
-      .eq('Is_discontinued', true);
+      .eq('is_discontinued', true);
 
     // Get count by type using RPC
     const { data: typeData } = await supabase
@@ -235,7 +235,7 @@ export function formatMedicineForDisplay(medicine: MedicineData): {
     dosage: medicine.pack_size_label || 'Consult healthcare provider',
     prescription_required: false, // You can add logic based on medicine type
     image_url: DEFAULT_IMAGE,
-    stock_available: !medicine.Is_discontinued,
+    stock_available: !medicine.is_discontinued,
     composition: medicine.salt_composition || 'Not specified',
     sideEffects: medicine.side_effects || 'Consult healthcare provider',
     interactions: medicine.drug_interactions || 'Consult healthcare provider'
