@@ -17,23 +17,19 @@ const Home = () => {
   const [categories, setCategories] = useState<MedicineCategory[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const [displayCount, setDisplayCount] = useState(4); // Show only 4 cards initially
+  const [displayCount, setDisplayCount] = useState(20); // Show 20 cards initially
 
   useEffect(() => {
     const loadData = async () => {
       try {
+        setLoading(true);
         const categoriesData = await medicineApiService.getCategories();
         setCategories(categoriesData);
         
-        // Load featured medicines in background
-        medicineApiService.getFeaturedMedicines(8).then(medicinesData => {
-          setFeaturedMedicines(medicinesData);
-          setLoading(false);
-        }).catch(error => {
-          console.error('Error loading medicines:', error);
-          toast.error('Failed to load medicines');
-          setLoading(false);
-        });
+        // Load 20 featured medicines
+        const medicinesData = await medicineApiService.getFeaturedMedicines(20);
+        setFeaturedMedicines(medicinesData);
+        setLoading(false);
       } catch (error) {
         console.error('Error loading data:', error);
         toast.error('Failed to load data');
@@ -199,7 +195,7 @@ const Home = () => {
 
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[...Array(4)].map((_, i) => (
+              {[...Array(20)].map((_, i) => (
                 <Card key={i} className="h-96 animate-pulse">
                   <div className="aspect-square bg-muted" />
                   <CardContent className="p-4">
@@ -211,33 +207,19 @@ const Home = () => {
             </div>
           ) : featuredMedicines.length === 0 ? (
             <Card className="p-12 text-center">
-              <p className="text-muted-foreground mb-4">Loading medicines from API...</p>
-              <p className="text-sm text-muted-foreground">This may take a few moments on first load</p>
+              <p className="text-muted-foreground mb-4">No medicines available</p>
+              <p className="text-sm text-muted-foreground">Please check your database connection or import data</p>
             </Card>
           ) : (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {featuredMedicines.slice(0, displayCount).map((medicine) => (
-                  <MedicineCard
-                    key={medicine.id}
-                    medicine={medicine}
-                    onAddToCart={handleAddToCart}
-                  />
-                ))}
-              </div>
-              
-              {displayCount < featuredMedicines.length && (
-                <div className="text-center mt-8">
-                  <Button 
-                    onClick={() => setDisplayCount(prev => Math.min(prev + 4, featuredMedicines.length))}
-                    variant="outline"
-                    size="lg"
-                  >
-                    Load More ({featuredMedicines.length - displayCount} remaining)
-                  </Button>
-                </div>
-              )}
-            </>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {featuredMedicines.slice(0, displayCount).map((medicine) => (
+                <MedicineCard
+                  key={medicine.id}
+                  medicine={medicine}
+                  onAddToCart={handleAddToCart}
+                />
+              ))}
+            </div>
           )}
 
           <div className="text-center mt-8 xl:hidden">
