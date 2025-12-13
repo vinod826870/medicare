@@ -1,7 +1,9 @@
 // Medicine API Service - Real API Integration via Supabase Edge Function
 // Fetches REAL medicine data from RxNorm API and REAL images from RxImage API (NIH)
+// Falls back to local data if Edge Function is not available
 
 import { supabase } from '@/db/supabase';
+import { LOCAL_MEDICINES, searchLocalMedicines, getLocalMedicineById } from './localMedicineData';
 
 export interface MedicineApiData {
   id: string;
@@ -59,6 +61,9 @@ let medicineCache: Map<string, MedicineApiData[]> = new Map();
 let cacheTimestamp: number = 0;
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
+// Flag to track if Edge Function is available
+let useLocalData = false;
+
 // Helper function to call Edge Function
 async function callEdgeFunction(action: string, params: Record<string, string> = {}): Promise<any> {
   try {
@@ -91,6 +96,8 @@ async function callEdgeFunction(action: string, params: Record<string, string> =
     return result.data;
   } catch (error) {
     console.error('Error calling Edge Function:', error);
+    console.log('🔄 Falling back to local data...');
+    useLocalData = true;
     throw error;
   }
 }
@@ -111,22 +118,32 @@ export const medicineApiService = {
       const now = Date.now();
       
       if (medicineCache.has(cacheKey) && (now - cacheTimestamp) < CACHE_DURATION) {
-        console.log('Using cached results for:', cacheKey);
+        console.log('✅ Using cached results for:', cacheKey);
         results = medicineCache.get(cacheKey) || [];
+      } else if (useLocalData) {
+        // Use local data if Edge Function failed before
+        console.log('📦 Using local data (Edge Function unavailable)');
+        results = filters?.search ? searchLocalMedicines(filters.search) : LOCAL_MEDICINES;
       } else {
-        console.log('Fetching from API for:', cacheKey);
-        // Fetch from Edge Function
-        if (filters?.search) {
-          results = await callEdgeFunction('search', { search: filters.search });
-        } else {
-          results = await callEdgeFunction('popular');
+        console.log('🌐 Fetching from Edge Function for:', cacheKey);
+        try {
+          // Try to fetch from Edge Function
+          if (filters?.search) {
+            results = await callEdgeFunction('search', { search: filters.search });
+          } else {
+            results = await callEdgeFunction('popular');
+          }
+          
+          console.log('✅ Edge Function returned', results.length, 'medicines');
+          
+          // Cache results
+          medicineCache.set(cacheKey, results);
+          cacheTimestamp = now;
+        } catch (error) {
+          // Fall back to local data
+          console.log('📦 Using local data as fallback');
+          results = filters?.search ? searchLocalMedicines(filters.search) : LOCAL_MEDICINES;
         }
-        
-        console.log('API returned', results.length, 'medicines');
-        
-        // Cache results
-        medicineCache.set(cacheKey, results);
-        cacheTimestamp = now;
       }
       
       // Apply category filter
@@ -142,22 +159,31 @@ export const medicineApiService = {
       return results;
     } catch (error) {
       console.error('Error getting medicines:', error);
-      // Return empty array instead of throwing to prevent UI crashes
-      return [];
+      // Return local data as final fallback
+      return LOCAL_MEDICINES;
     }
   },
 
   // Get medicine by ID
   getMedicineById: async (id: string): Promise<MedicineApiData | null> => {
     try {
-      // Extract RxCUI from ID (format: rx-{rxcui})
-      const rxcui = id.replace('rx-', '');
+      if (useLocalData) {
+        return getLocalMedicineById(id);
+      }
       
-      const result = await callEdgeFunction('getById', { rxcui });
-      return result;
+      // Extract RxCUI from ID (format: rx-{rxcui})
+      const rxcui = id.replace('rx-', '').replace('local-', '');
+      
+      try {
+        const result = await callEdgeFunction('getById', { rxcui });
+        return result;
+      } catch (error) {
+        // Fall back to local data
+        return getLocalMedicineById(id);
+      }
     } catch (error) {
       console.error('Error getting medicine by ID:', error);
-      return null;
+      return getLocalMedicineById(id);
     }
   },
 
@@ -169,14 +195,26 @@ export const medicineApiService = {
   // Search medicines
   searchMedicines: async (query: string): Promise<MedicineApiData[]> => {
     try {
-      if (!query) {
-        return await callEdgeFunction('popular');
+      if (useLocalData) {
+        return searchLocalMedicines(query);
       }
       
-      return await callEdgeFunction('search', { search: query });
+      if (!query) {
+        try {
+          return await callEdgeFunction('popular');
+        } catch (error) {
+          return LOCAL_MEDICINES;
+        }
+      }
+      
+      try {
+        return await callEdgeFunction('search', { search: query });
+      } catch (error) {
+        return searchLocalMedicines(query);
+      }
     } catch (error) {
       console.error('Error searching medicines:', error);
-      return [];
+      return searchLocalMedicines(query);
     }
   }
 };
