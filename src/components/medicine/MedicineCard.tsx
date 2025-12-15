@@ -97,7 +97,7 @@ const MedicineCard = ({ medicine, onAddToCart }: MedicineCardProps) => {
           </p>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-primary">
-              ${medicine.price.toFixed(2)}
+              ₹{medicine.price.toFixed(2)}
             </span>
           </div>
         </div>
