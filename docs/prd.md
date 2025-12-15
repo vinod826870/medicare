@@ -4,13 +4,15 @@
 MediCare Online Pharmacy
 
 ## 2. Website Description
-An online medicine platform that enables users to conveniently browse, search, and purchase medicines while providing administrators with comprehensive management capabilities through an enhanced admin dashboard. The website emphasizes user convenience, secure transactions, streamlined inventory updates, and rich interactive features. Medicine data is retrieved from Supabase database.\n
+An online medicine platform that enables users to conveniently browse, search, and purchase medicines while providing administrators with comprehensive management capabilities through an enhanced admin dashboard. The website emphasizes user convenience, secure transactions, streamlined inventory updates, and rich interactive features. Medicine data is retrieved from Supabase database.
+
 ## 3. Core Features
 
 ### 3.1 User Features
 \n#### 3.1.1 Account & Authentication
 - **User Registration & Login**: Allow users to create accounts and securely log in to access personalized services
-- **Social Login**: Quick login via Google, Facebook, or Apple accounts\n- **Two-Factor Authentication**: Optional2FA for enhanced account security
+- **Social Login**: Quick login via Google, Facebook, or Apple accounts
+- **Two-Factor Authentication**: Optional2FA for enhanced account security
 - **Password Recovery**: Email-based password reset functionality
 \n#### 3.1.2 Medicine Discovery & Shopping
 - **Medicine Search & Browse**: Enable users to search for medicines by name, category, manufacturer, or composition, and browse through organized medicine catalogs retrieved from Supabase database. Each medicine listing displays information from the medicine_data table. Search functionality is optimized for fast performance across large dataset\n- **Advanced Filters**: Filter by price range, manufacturer, medicine type, pack size, and availability\n- **Voice Search**: Search medicines using voice commands for hands-free convenience
@@ -29,14 +31,14 @@ An online medicine platform that enables users to conveniently browse, search, a
 #### 3.1.4 Personalization & Engagement
 - **Wishlist**: Users can save medicines to a wishlist for future reference and easy access
 - **Product Reviews & Ratings**: Users can rate and review purchased medicines to help other customers make informed decisions
-- **Medicine Comparison**: Users can compare up to 4 medicines side-by-side based on price, composition, manufacturer, and other attributes
+- **Medicine Comparison**: Users can compare up to 4 medicines side-by-side based on price, composition, manufacturer, and other attributes. The comparison feature retrieves medicine data from the medicine_data table in Supabase database, ensuring consistency with the main medicines page. Users can search and add medicines to comparison using the same search functionality that queries the medicine_data table
 - **Personalized Recommendations**: AI-powered medicine suggestions based on browsing and purchase history
 - **Recently Viewed**: Quick access to recently browsed medicines\n- **Price Drop Alerts**: Get notified when wishlist items go on sale
 - **Loyalty Program**: Earn points on purchases and redeem for discounts
 - **Referral Program**: Invite friends and earn rewards for successful referrals
 
 #### 3.1.5 Health & Wellness
-- **Health Blog**: Access informative articles about health tips, medicine usage guidelines, and wellness advice
+- **Health Blog**: Access informative articles about health tips, medicine usage guidelines, and wellness advice. Blog articles are stored and managed in the Supabase database, allowing administrators to create, edit, and publish content through the admin dashboard
 - **Medicine Reminders**: Set daily reminders for taking medicines with dosage information
 - **Health Tracker**: Track vital health metrics like blood pressure, blood sugar, and weight
 - **Symptom Checker**: Interactive tool to check symptoms and get medicine suggestions (disclaimer included)
@@ -45,7 +47,8 @@ An online medicine platform that enables users to conveniently browse, search, a
 - **First Aid Guide**: Quick access to first aid instructions for common emergencies
 
 #### 3.1.6 Communication & Support
-- **Contact Form**: Users can submit inquiries or feedback through a contact form. Form submissions will be stored in the database and automatically sent via email to vinod826870@gmail.com\n- **Live Chat Support**: Real-time chat with customer support representatives
+- **Contact Form**: Users can submit inquiries or feedback through a contact form. Form submissions will be stored in the database and automatically sent via email to vinod826870@gmail.com
+- **Live Chat Support**: Real-time chat with customer support representatives
 - **Chatbot Assistant**: AI-powered chatbot for instant answers to common questions
 - **Video Consultation**: Book online consultations with pharmacists or healthcare professionals
 - **Community Forum**: Discuss health topics and share experiences with other users
@@ -57,7 +60,8 @@ An online medicine platform that enables users to conveniently browse, search, a
 - **Notification Preferences**: Customize email, SMS, and push notification settings
 - **Language Selection**: Choose preferred language for the interface
 
-### 3.2 Admin Features\n
+### 3.2 Admin Features
+
 #### 3.2.1 Enhanced Admin Dashboard
 - **Dashboard Overview**: Comprehensive dashboard displaying key metrics including:
   - Total sales revenue (daily, weekly, monthly)
@@ -67,7 +71,7 @@ An online medicine platform that enables users to conveniently browse, search, a
   - Top-selling medicines and categories
   - Revenue charts and sales trends visualization
   - Recent customer reviews and ratings summary
-\n#### 3.2.2 Inventory Management
+\n#### 3.2.2Inventory Management
 - **Stock Management**: Monitor inventory status, update stock quantities, set reorder levels, and manage stock information from the medicine_data table
 - **Add/Edit/Delete Medicines**: Full CRUD operations for medicine records including bulk upload capability
 - **Stock Alerts**: Automated notifications for low stock and out-of-stock items
@@ -83,18 +87,29 @@ An online medicine platform that enables users to conveniently browse, search, a
 - **User Verification**: Verify prescription uploads and approve prescription medicine orders
 
 #### 3.2.5 Content Management
-- **Blog Management**: Create, edit, and publish health-related blog articles
+- **Blog Management**: Create, edit, publish, and delete health-related blog articles. Blog posts are stored in a dedicated blog_posts table in the Supabase database with the following structure:
+  - **id**: Unique identifier for each blog post
+  - **title**: Blog post title
+  - **content**: Full article content (supports rich text/HTML)\n  - **author**: Author name or admin user ID
+  - **category**: Blog category (e.g., Health Tips, Medicine Guide, Wellness)
+  - **featured_image**: Image URL for the blog post thumbnail
+  - **published_date**: Publication date and time
+  - **status**: Draft or Published
+  - **tags**: Comma-separated tags for categorization
+  - **views**: Number of views counter
+  - **created_at**: Timestamp of creation\n  - **updated_at**: Timestamp of last update
+- Admin can perform full CRUD operations on blog posts through the admin dashboard
 - **Banner Management**: Manage homepage banners and promotional slides
 - **Category Management**: Add, edit, or remove medicine categories
-\n#### 3.2.6 Analytics & Reports
+
+#### 3.2.6 Analytics & Reports
 - **Sales Reports**: Generate detailed sales reports by date range, category, or product
 - **Customer Analytics**: Analyze customer demographics, behavior, and preferences
 - **Inventory Reports**: Track stock movement, turnover rates, and inventory valuation
 - **Revenue Analytics**: Monitor revenue streams, profit margins, and financial performance
 
 #### 3.2.7 Settings & Configuration
-- **Payment Settings**: Configure Stripe payment gateway settings
-- **Email Settings**: Manage email templates and notification preferences
+- **Payment Settings**: Configure Stripe payment gateway settings\n- **Email Settings**: Manage email templates and notification preferences
 - **Shipping Settings**: Configure shipping zones, rates, and delivery options
 - **Tax Configuration**: Set up tax rates and rules
 - **Admin User Management**: Manage admin roles and permissions
@@ -139,7 +154,9 @@ Table columns:
 - Support pagination for efficient loading of large dataset (recommended page size: 20-50 items)
 - Implement lazy loading or infinite scroll for smooth user experience
 - Add loading states and skeleton screens while data is being fetched
-\n### 4.5 Search Optimization
+- **Compare Page Data Source**: The medicine comparison feature uses the same medicine_data table and search functionality as the main medicines page, ensuring data consistency across the platform
+
+### 4.5 Search Optimization
 - Utilize Supabase full-text search capabilities for faster query results
 - Implement client-side caching to reduce repeated API calls
 - Use query parameters for filtering and sorting to minimize data transfer
@@ -155,8 +172,7 @@ The platform will organize medicines based on the'type' column in the medicine_d
 - **Implementation**: Configure Stripe checkout for cart payment processing, supporting major credit/debit cards\n
 ## 7. Email Configuration
 - **Email Service API Key**: re_cSADr4hj_Lqc4T5x8j92whgXu1RhAxAmC\n- **Usage**: This API key should be configured in the email service integration to enable automated email sending functionality
-- **Trigger Point**: When users submit the contact form, the system will use this API key to authenticate with the email service and send form submissions to vinod826870@gmail.com
-- **Implementation**: The API key should be securely stored in environment variables and used for email service authentication during contact form submission processing
+- **Trigger Point**: When users submit the contact form, the system will use this API key to authenticate with the email service and send form submissions to vinod826870@gmail.com\n- **Implementation**: The API key should be securely stored in environment variables and used for email service authentication during contact form submission processing
 
 ## 8. Additional Pages
 \n### 8.1 User-Facing Pages
@@ -181,7 +197,7 @@ The platform will organize medicines based on the'type' column in the medicine_d
 - **Order History**: View past orders with filter and search options
 - **Track Order**: Real-time order tracking with delivery status updates
 - **Wishlist Page**: Saved medicines with add to cart and remove options
-- **Compare Page**: Side-by-side comparison of selected medicines
+- **Compare Page**: Side-by-side comparison of selected medicines with search functionality that retrieves data from the medicine_data table in Supabase database
 - **Saved Addresses**: Manage multiple delivery addresses
 - **Family Profiles**: Manage family member profiles and their medicine lists
 - **Health Records**: View and manage uploaded prescriptions and health documents
@@ -189,7 +205,7 @@ The platform will organize medicines based on the'type' column in the medicine_d
 - **Referral Dashboard**: Track referrals, rewards earned, and share referral link
 
 #### 8.1.4 Health & Wellness Pages
-- **Health Blog**: Browse health articles by category with search functionality
+- **Health Blog**: Browse health articles by category with search functionality. Articles are retrieved from the blog_posts table in Supabase database
 - **Blog Article Page**: Read full articles with related posts and comment section
 - **Medicine Reminders**: Set and manage medicine reminders with notification settings
 - **Health Tracker**: Log and visualize health metrics over time
@@ -198,8 +214,7 @@ The platform will organize medicines based on the'type' column in the medicine_d
 - **Dosage Calculator**: Calculate appropriate dosage based on patient information
 - **First Aid Guide**: Browse first aid instructions by emergency type
 - **Health Tips**: Daily health tips and wellness advice
-
-#### 8.1.5 Support & Information Pages
+\n#### 8.1.5 Support & Information Pages
 - **Contact Us Page**: Contact form, phone number, email, and live chat access
 - **Live Chat**: Real-time chat interface with support representatives
 - **FAQ Page**: Frequently asked questions organized by category
@@ -232,16 +247,20 @@ The platform will organize medicines based on the'type' column in the medicine_d
 - **Order Management Page**: Order list with status update and filtering options
 - **Customer Management Page**: User list and customer details
 - **Analytics Page**: Sales reports, revenue charts, and performance metrics
-- **Blog Management Page**: Create and manage blog posts
-- **Settings Page**: System configuration and preferences
-
-## 9. Design Style\n
+- **Blog Management Page**: Create, edit, publish, and manage blog posts stored in the blog_posts table. Admin interface includes:
+  - List view of all blog posts with filters (published/draft, category, date)\n  - Create new blog post form with rich text editor
+  - Edit existing blog posts
+  - Delete blog posts
+  - Preview blog posts before publishing
+  - Manage blog categories and tags\n  - View blog analytics (views, engagement)\n- **Settings Page**: System configuration and preferences
+\n## 9. Design Style\n
 ### 9.1 Color Scheme
 - Primary color: Clean medical blue (#2E86DE) conveying trust and professionalism
 - Secondary color: Soft green (#27AE60) representing health and wellness
 - Background: Light gray (#F5F6FA) for comfortable reading
 - Accent color: Warm orange (#E67E22) for call-to-action buttons
-\n### 9.2 Visual Details
+
+### 9.2 Visual Details
 - Rounded corners (8px radius) for cards and buttons creating a friendly, approachable feel
 - Subtle shadows (02px 8px rgba(0,0,0,0.1)) for depth and hierarchy
 - Clean, sans-serif typography for easy readability
@@ -253,8 +272,7 @@ The platform will organize medicines based on the'type' column in the medicine_d
 - Smooth transitions and micro-animations for enhanced user experience
 
 ### 9.3 Layout\n- Card-based grid layout for medicine listings (3-4 columns on desktop, responsive on mobile) as shown in image.png
-- Fixed navigation bar at top for quick access to search, cart, and user account
-- Sidebar filters based on medicine type for efficient discovery and category navigation
+- Fixed navigation bar at top for quick access to search, cart, and user account\n- Sidebar filters based on medicine type for efficient discovery and category navigation
 - Search bar prominently placed at the top with real-time search suggestions
 - Spacious whitespace ensuring content clarity and reducing visual clutter
 - Pagination controls or infinite scroll at the bottom of the medicine listing page

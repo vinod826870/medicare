@@ -22,6 +22,7 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminBlog from './pages/admin/AdminBlog';
 import NotFound from './pages/NotFound';
 
 interface RouteConfig {
@@ -168,6 +169,12 @@ const routes: RouteConfig[] = [
     name: 'Admin Settings',
     path: '/admin/settings',
     element: <AdminSettings />,
+    visible: false
+  },
+  {
+    name: 'Admin Blog',
+    path: '/admin/blog',
+    element: <AdminBlog />,
     visible: false
   },
   {

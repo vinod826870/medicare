@@ -8,7 +8,10 @@ import type {
   PaymentVerificationRequest,
   PaymentVerificationResponse,
   ContactSubmission,
-  CreateContactSubmission
+  CreateContactSubmission,
+  BlogPost,
+  CreateBlogPost,
+  UpdateBlogPost
 } from '@/types/types';
 
 // Profile API
@@ -368,5 +371,145 @@ export const contactApi = {
       console.error('Exception in sendEmailNotification:', err);
       return { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
     }
+  }
+};
+
+// Blog API
+export const blogApi = {
+  async getAllPosts(includeUnpublished = false): Promise<BlogPost[]> {
+    let query = supabase
+      .from('blog_posts')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!includeUnpublished) {
+      query = query.eq('published', true);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Error fetching blog posts:', error);
+      return [];
+    }
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getPostBySlug(slug: string): Promise<BlogPost | null> {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('slug', slug)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching blog post:', error);
+      return null;
+    }
+    return data;
+  },
+
+  async getPostById(id: string): Promise<BlogPost | null> {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching blog post:', error);
+      return null;
+    }
+    return data;
+  },
+
+  async getPostsByCategory(category: string): Promise<BlogPost[]> {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('category', category)
+      .eq('published', true)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching blog posts by category:', error);
+      return [];
+    }
+    return Array.isArray(data) ? data : [];
+  },
+
+  async searchPosts(searchTerm: string): Promise<BlogPost[]> {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('published', true)
+      .or(`title.ilike.%${searchTerm}%,excerpt.ilike.%${searchTerm}%,content.ilike.%${searchTerm}%`)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error searching blog posts:', error);
+      return [];
+    }
+    return Array.isArray(data) ? data : [];
+  },
+
+  async createPost(post: CreateBlogPost): Promise<BlogPost | null> {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .insert(post)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error creating blog post:', error);
+      throw error;
+    }
+    return data;
+  },
+
+  async updatePost(id: string, updates: UpdateBlogPost): Promise<BlogPost | null> {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error updating blog post:', error);
+      throw error;
+    }
+    return data;
+  },
+
+  async deletePost(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from('blog_posts')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting blog post:', error);
+      throw error;
+    }
+    return true;
+  },
+
+  async getCategories(): Promise<string[]> {
+    const { data, error } = await supabase
+      .from('blog_posts')
+      .select('category')
+      .eq('published', true);
+
+    if (error) {
+      console.error('Error fetching categories:', error);
+      return [];
+    }
+
+    const categories = Array.isArray(data) 
+      ? [...new Set(data.map(item => item.category))]
+      : [];
+    
+    return categories;
   }
 };

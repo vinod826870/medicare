@@ -156,3 +156,43 @@ export interface MedicineData {
   side_effects: string | null;
   drug_interactions: string | null;
 }
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  author: string;
+  category: string;
+  image_url: string | null;
+  read_time: number;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateBlogPost {
+  title: string;
+  slug: string;
+  excerpt?: string;
+  content: string;
+  author: string;
+  category: string;
+  image_url?: string;
+  read_time?: number;
+  published?: boolean;
+}
+
+export interface UpdateBlogPost {
+  title?: string;
+  slug?: string;
+  excerpt?: string;
+  content?: string;
+  author?: string;
+  category?: string;
+  image_url?: string;
+  read_time?: number;
+  published?: boolean;
+}
+
