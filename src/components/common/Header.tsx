@@ -16,11 +16,13 @@ import { cartApi } from "@/db/api";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [wishlistCount, setWishlistCount] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, isAdmin, signOut } = useAuth();
 
-  useEffect(() => {
+  // Load cart count
+  const loadCartCount = () => {
     if (user) {
       cartApi.getCartItems(user.id).then(items => {
         const count = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -29,7 +31,41 @@ const Header = () => {
     } else {
       setCartCount(0);
     }
+  };
+
+  // Load wishlist count
+  const loadWishlistCount = () => {
+    const saved = localStorage.getItem('wishlist');
+    if (saved) {
+      try {
+        const wishlist = JSON.parse(saved);
+        setWishlistCount(Array.isArray(wishlist) ? wishlist.length : 0);
+      } catch {
+        setWishlistCount(0);
+      }
+    } else {
+      setWishlistCount(0);
+    }
+  };
+
+  useEffect(() => {
+    loadCartCount();
+    loadWishlistCount();
   }, [user, location.pathname]);
+
+  // Listen for custom events to update counters
+  useEffect(() => {
+    const handleCartUpdate = () => loadCartCount();
+    const handleWishlistUpdate = () => loadWishlistCount();
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    window.addEventListener('wishlistUpdated', handleWishlistUpdate);
+
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+      window.removeEventListener('wishlistUpdated', handleWishlistUpdate);
+    };
+  }, [user]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -80,9 +116,18 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
+              className="relative"
               onClick={() => navigate('/wishlist')}
             >
               <Heart className="w-5 h-5" />
+              {wishlistCount > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                >
+                  {wishlistCount}
+                </Badge>
+              )}
             </Button>
 
             <Button

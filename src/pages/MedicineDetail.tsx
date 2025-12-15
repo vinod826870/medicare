@@ -52,6 +52,7 @@ const MedicineDetail = () => {
 
     try {
       await cartApi.addToCart(user.id, medicine.id, quantity);
+      window.dispatchEvent(new Event('cartUpdated'));
       toast.success(`${medicine.name} added to cart`);
       navigate('/cart');
     } catch (error) {
@@ -73,6 +74,7 @@ const MedicineDetail = () => {
 
     wishlist.push(medicine);
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    window.dispatchEvent(new Event('wishlistUpdated'));
     toast.success('Added to wishlist!');
   };
 

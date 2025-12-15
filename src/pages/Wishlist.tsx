@@ -24,6 +24,7 @@ const Wishlist = () => {
     const updated = wishlist.filter(item => item.id !== id);
     setWishlist(updated);
     localStorage.setItem('wishlist', JSON.stringify(updated));
+    window.dispatchEvent(new Event('wishlistUpdated'));
     toast.success('Removed from wishlist');
   };
 
@@ -36,6 +37,7 @@ const Wishlist = () => {
 
     try {
       await cartApi.addToCart(user.id, item.id, 1);
+      window.dispatchEvent(new Event('cartUpdated'));
       toast.success('Added to cart!');
     } catch (error) {
       console.error('Error adding to cart:', error);

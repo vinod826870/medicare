@@ -152,6 +152,7 @@ const Medicines = () => {
 
     try {
       await cartApi.addToCart(user.id, medicineId, 1);
+      window.dispatchEvent(new Event('cartUpdated'));
       const medicine = medicines.find(m => m.id === medicineId);
       toast.success(`${medicine?.name || 'Medicine'} added to cart`);
     } catch (error) {

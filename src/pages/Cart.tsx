@@ -67,6 +67,7 @@ const Cart = () => {
           item.id === itemId ? { ...item, quantity: newQuantity } : item
         )
       );
+      window.dispatchEvent(new Event('cartUpdated'));
     } catch (error) {
       console.error('Error updating quantity:', error);
       toast.error('Failed to update quantity');
@@ -77,6 +78,7 @@ const Cart = () => {
     try {
       await cartApi.removeFromCart(itemId);
       setCartItems(items => items.filter(item => item.id !== itemId));
+      window.dispatchEvent(new Event('cartUpdated'));
       toast.success('Item removed from cart');
     } catch (error) {
       console.error('Error removing item:', error);
