@@ -14,6 +14,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminMedicines from './pages/admin/AdminMedicines';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
+import AdminSettings from './pages/admin/AdminSettings';
 import NotFound from './pages/NotFound';
 
 interface RouteConfig {
@@ -112,6 +114,18 @@ const routes: RouteConfig[] = [
     name: 'Admin Users',
     path: '/admin/users',
     element: <AdminUsers />,
+    visible: false
+  },
+  {
+    name: 'Admin Analytics',
+    path: '/admin/analytics',
+    element: <AdminAnalytics />,
+    visible: false
+  },
+  {
+    name: 'Admin Settings',
+    path: '/admin/settings',
+    element: <AdminSettings />,
     visible: false
   },
   {
