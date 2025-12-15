@@ -23,19 +23,56 @@ const MEDICINE_IMAGES: Record<string, string> = {
   'default': 'https://miaoda-site-img.s3cdn.medo.dev/images/38c08afb-e72b-45b1-bb55-8d1f6860d41f.jpg'
 };
 
-// Get image URL based on medicine type
-export function getMedicineImageUrl(type: string | null): string {
-  if (!type) return MEDICINE_IMAGES.default;
+// Array of all available images for variety
+const ALL_MEDICINE_IMAGES = [
+  'https://miaoda-site-img.s3cdn.medo.dev/images/38c08afb-e72b-45b1-bb55-8d1f6860d41f.jpg', // Tablet
+  'https://miaoda-site-img.s3cdn.medo.dev/images/6a72b906-5272-4632-a4a6-d1f5c84cc85d.jpg', // Capsule
+  'https://miaoda-site-img.s3cdn.medo.dev/images/8b5be1d1-fbc1-4d0d-93ea-6b1d06d10d95.jpg', // Syrup
+  'https://miaoda-site-img.s3cdn.medo.dev/images/4d86a7c7-c529-4cae-9042-5ec4a3442fb2.jpg', // Injection
+  'https://miaoda-site-img.s3cdn.medo.dev/images/f02c9aaa-2503-4be8-b496-92a8aa592c27.jpg', // Cream
+  'https://miaoda-site-img.s3cdn.medo.dev/images/11592382-8ce7-4ea4-88b0-7507e75a7ef8.jpg', // Drops
+  'https://miaoda-site-img.s3cdn.medo.dev/images/34e9ad05-e6f8-4197-a499-7fe7fc875fe2.jpg', // Gel
+  'https://miaoda-site-img.s3cdn.medo.dev/images/e4f63efa-2797-457c-9ed6-787f5164c251.jpg', // Powder
+  'https://miaoda-site-img.s3cdn.medo.dev/images/1a6f7e11-f30b-49ae-ad07-b673c0cf8234.jpg', // Inhaler
+  'https://miaoda-site-img.s3cdn.medo.dev/images/47401bf4-cc04-4ecc-9186-c6c92f07e84e.jpg', // Lotion
+];
+
+// Simple hash function to convert string to number
+function hashString(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash);
+}
+
+// Get image URL based on medicine type and ID for variety
+export function getMedicineImageUrl(type: string | null, medicineId?: number | string): string {
+  // First, try to match by type
+  if (type) {
+    // Check for exact match
+    if (MEDICINE_IMAGES[type]) return MEDICINE_IMAGES[type];
+    
+    // Check for partial match (case-insensitive)
+    const typeKey = Object.keys(MEDICINE_IMAGES).find(key => 
+      type.toLowerCase().includes(key.toLowerCase())
+    );
+    
+    if (typeKey) return MEDICINE_IMAGES[typeKey];
+  }
   
-  // Check for exact match
-  if (MEDICINE_IMAGES[type]) return MEDICINE_IMAGES[type];
+  // If no type match and we have an ID, use hash-based selection for variety
+  if (medicineId) {
+    const idString = medicineId.toString();
+    const hash = hashString(idString);
+    const imageIndex = hash % ALL_MEDICINE_IMAGES.length;
+    return ALL_MEDICINE_IMAGES[imageIndex];
+  }
   
-  // Check for partial match (case-insensitive)
-  const typeKey = Object.keys(MEDICINE_IMAGES).find(key => 
-    type.toLowerCase().includes(key.toLowerCase())
-  );
-  
-  return typeKey ? MEDICINE_IMAGES[typeKey] : MEDICINE_IMAGES.default;
+  // Fallback to default
+  return MEDICINE_IMAGES.default;
 }
 
 // Get unique medicine types for categories
@@ -312,7 +349,7 @@ export function formatMedicineForDisplay(medicine: MedicineData): {
     manufacturer: medicine.manufacturer_name || 'Unknown Manufacturer',
     dosage: medicine.pack_size_label || 'Consult healthcare provider',
     prescription_required: false, // You can add logic based on medicine type
-    image_url: getMedicineImageUrl(medicine.type),
+    image_url: getMedicineImageUrl(medicine.type, medicine.id),
     stock_available: !medicine.is_discontinued,
     composition: medicine.salt_composition || 'Not specified',
     sideEffects: medicine.side_effects || 'Consult healthcare provider',
