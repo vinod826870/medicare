@@ -10,6 +10,12 @@ import Contact from './pages/Contact';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import HealthBlog from './pages/HealthBlog';
+import BlogArticle from './pages/BlogArticle';
+import Reminders from './pages/Reminders';
+import Wishlist from './pages/Wishlist';
+import HealthCalculator from './pages/HealthCalculator';
+import MedicineComparison from './pages/MedicineComparison';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminMedicines from './pages/admin/AdminMedicines';
 import AdminOrders from './pages/admin/AdminOrders';
@@ -90,6 +96,42 @@ const routes: RouteConfig[] = [
     name: 'Register',
     path: '/register',
     element: <Register />,
+    visible: false
+  },
+  {
+    name: 'Health Blog',
+    path: '/blog',
+    element: <HealthBlog />,
+    visible: false
+  },
+  {
+    name: 'Blog Article',
+    path: '/blog/:id',
+    element: <BlogArticle />,
+    visible: false
+  },
+  {
+    name: 'Medicine Reminders',
+    path: '/reminders',
+    element: <Reminders />,
+    visible: false
+  },
+  {
+    name: 'Wishlist',
+    path: '/wishlist',
+    element: <Wishlist />,
+    visible: false
+  },
+  {
+    name: 'Health Calculator',
+    path: '/calculator',
+    element: <HealthCalculator />,
+    visible: false
+  },
+  {
+    name: 'Medicine Comparison',
+    path: '/compare',
+    element: <MedicineComparison />,
     visible: false
   },
   {

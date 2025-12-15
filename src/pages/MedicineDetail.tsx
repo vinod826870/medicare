@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart, Package, AlertCircle, Pill, Star } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Package, AlertCircle, Pill, Star, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -58,6 +58,22 @@ const MedicineDetail = () => {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add item to cart');
     }
+  };
+
+  const handleAddToWishlist = () => {
+    if (!medicine) return;
+
+    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    const exists = wishlist.find((item: any) => item.id === medicine.id);
+
+    if (exists) {
+      toast.info('Already in wishlist');
+      return;
+    }
+
+    wishlist.push(medicine);
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    toast.success('Added to wishlist!');
   };
 
   if (loading) {
@@ -207,14 +223,23 @@ const MedicineDetail = () => {
                   />
                 </div>
 
-                <Button
-                  size="lg"
-                  className="w-full"
-                  onClick={handleAddToCart}
-                >
-                  <ShoppingCart className="w-5 h-5 mr-2" />
-                  Add to Cart
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    size="lg"
+                    className="flex-1"
+                    onClick={handleAddToCart}
+                  >
+                    <ShoppingCart className="w-5 h-5 mr-2" />
+                    Add to Cart
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={handleAddToWishlist}
+                  >
+                    <Heart className="w-5 h-5" />
+                  </Button>
+                </div>
               </div>
             ) : (
               <Button size="lg" className="w-full" disabled>

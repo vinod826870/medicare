@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, LogOut, Settings, Package, Menu, X, Pill } from "lucide-react";
+import { ShoppingCart, User, LogOut, Settings, Package, Menu, X, Pill, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -39,6 +39,10 @@ const Header = () => {
   const navigation = [
     { name: 'Home', path: '/' },
     { name: 'Medicines', path: '/medicines' },
+    { name: 'Health Blog', path: '/blog' },
+    { name: 'Reminders', path: '/reminders' },
+    { name: 'Calculator', path: '/calculator' },
+    { name: 'Compare', path: '/compare' },
   ];
 
   return (
@@ -73,6 +77,14 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/wishlist')}
+            >
+              <Heart className="w-5 h-5" />
+            </Button>
+
             <Button
               variant="ghost"
               size="icon"
