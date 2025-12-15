@@ -282,7 +282,7 @@ export function formatMedicineForDisplay(medicine: MedicineData): {
     manufacturer: medicine.manufacturer_name || 'Unknown Manufacturer',
     dosage: medicine.pack_size_label || 'Consult healthcare provider',
     prescription_required: false, // You can add logic based on medicine type
-    image_url: getMedicineImage(medicine.name, medicine.type, medicine.manufacturer_name),
+    image_url: getMedicineImage(medicine.name, medicine.type, medicine.manufacturer_name, medicine.id),
     stock_available: !medicine.is_discontinued,
     composition: medicine.salt_composition || 'Not specified',
     sideEffects: medicine.side_effects || 'Consult healthcare provider',

@@ -56,21 +56,40 @@ const MEDICINE_NAME_IMAGES: Record<string, string> = {
   'prednisone': 'https://miaoda-site-img.s3cdn.medo.dev/images/de5a968a-7607-4b5d-afae-4e795679863c.jpg',
 };
 
-// Fallback images by medicine type
-const TYPE_FALLBACK_IMAGES: Record<string, string> = {
-  'Tablet': 'https://miaoda-site-img.s3cdn.medo.dev/images/38c08afb-e72b-45b1-bb55-8d1f6860d41f.jpg',
-  'Capsule': 'https://miaoda-site-img.s3cdn.medo.dev/images/6a72b906-5272-4632-a4a6-d1f5c84cc85d.jpg',
-  'Syrup': 'https://miaoda-site-img.s3cdn.medo.dev/images/8b5be1d1-fbc1-4d0d-93ea-6b1d06d10d95.jpg',
-  'Injection': 'https://miaoda-site-img.s3cdn.medo.dev/images/4d86a7c7-c529-4cae-9042-5ec4a3442fb2.jpg',
-  'Cream': 'https://miaoda-site-img.s3cdn.medo.dev/images/f02c9aaa-2503-4be8-b496-92a8aa592c27.jpg',
-  'Ointment': 'https://miaoda-site-img.s3cdn.medo.dev/images/f02c9aaa-2503-4be8-b496-92a8aa592c27.jpg',
-  'Drops': 'https://miaoda-site-img.s3cdn.medo.dev/images/11592382-8ce7-4ea4-88b0-7507e75a7ef8.jpg',
-  'Gel': 'https://miaoda-site-img.s3cdn.medo.dev/images/34e9ad05-e6f8-4197-a499-7fe7fc875fe2.jpg',
-  'Powder': 'https://miaoda-site-img.s3cdn.medo.dev/images/e4f63efa-2797-457c-9ed6-787f5164c251.jpg',
-  'Inhaler': 'https://miaoda-site-img.s3cdn.medo.dev/images/1a6f7e11-f30b-49ae-ad07-b673c0cf8234.jpg',
-  'Lotion': 'https://miaoda-site-img.s3cdn.medo.dev/images/47401bf4-cc04-4ecc-9186-c6c92f07e84e.jpg',
-  'default': 'https://miaoda-site-img.s3cdn.medo.dev/images/38c08afb-e72b-45b1-bb55-8d1f6860d41f.jpg'
-};
+// Array of all available images for variety (ensures different images for each card)
+const ALL_MEDICINE_IMAGES = [
+  'https://miaoda-site-img.s3cdn.medo.dev/images/38c08afb-e72b-45b1-bb55-8d1f6860d41f.jpg', // Tablet
+  'https://miaoda-site-img.s3cdn.medo.dev/images/6a72b906-5272-4632-a4a6-d1f5c84cc85d.jpg', // Capsule
+  'https://miaoda-site-img.s3cdn.medo.dev/images/8b5be1d1-fbc1-4d0d-93ea-6b1d06d10d95.jpg', // Syrup
+  'https://miaoda-site-img.s3cdn.medo.dev/images/4d86a7c7-c529-4cae-9042-5ec4a3442fb2.jpg', // Injection
+  'https://miaoda-site-img.s3cdn.medo.dev/images/f02c9aaa-2503-4be8-b496-92a8aa592c27.jpg', // Cream
+  'https://miaoda-site-img.s3cdn.medo.dev/images/11592382-8ce7-4ea4-88b0-7507e75a7ef8.jpg', // Drops
+  'https://miaoda-site-img.s3cdn.medo.dev/images/34e9ad05-e6f8-4197-a499-7fe7fc875fe2.jpg', // Gel
+  'https://miaoda-site-img.s3cdn.medo.dev/images/e4f63efa-2797-457c-9ed6-787f5164c251.jpg', // Powder
+  'https://miaoda-site-img.s3cdn.medo.dev/images/1a6f7e11-f30b-49ae-ad07-b673c0cf8234.jpg', // Inhaler
+  'https://miaoda-site-img.s3cdn.medo.dev/images/47401bf4-cc04-4ecc-9186-c6c92f07e84e.jpg', // Lotion
+  'https://miaoda-site-img.s3cdn.medo.dev/images/22a290e5-7193-4f87-bc40-88a81804dfec.jpg', // Paracetamol
+  'https://miaoda-site-img.s3cdn.medo.dev/images/6d99d817-f430-4554-bca6-db4db9ea3d42.jpg', // Ibuprofen
+  'https://miaoda-site-img.s3cdn.medo.dev/images/26b15f53-606f-426d-9c2e-6fb78c851896.jpg', // Aspirin
+  'https://miaoda-site-img.s3cdn.medo.dev/images/342cc62b-9adf-48e3-92d2-5de5aefa9bc5.jpg', // Amoxicillin
+  'https://miaoda-site-img.s3cdn.medo.dev/images/cda3e9f8-71c4-4a93-ad07-c67fbf6559a8.jpg', // Azithromycin
+  'https://miaoda-site-img.s3cdn.medo.dev/images/d9fa8009-c840-4441-a937-5ece290c4ecf.jpg', // Cetirizine
+  'https://miaoda-site-img.s3cdn.medo.dev/images/887f779b-b41b-4910-a7e9-cf30fd9c9884.jpg', // Omeprazole
+  'https://miaoda-site-img.s3cdn.medo.dev/images/097c2d6e-3050-4a67-82bc-010a8f7a0ca6.jpg', // Metformin
+  'https://miaoda-site-img.s3cdn.medo.dev/images/aea40353-7d06-4830-950b-8bacdda36d9b.jpg', // Atorvastatin
+  'https://miaoda-site-img.s3cdn.medo.dev/images/3b840366-81aa-4d77-b0cb-4e3c5e766023.jpg', // Losartan
+];
+
+// Simple hash function to convert string to number
+function hashString(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash);
+}
 
 /**
  * Extract medicine active ingredient from full name
@@ -93,26 +112,27 @@ function extractActiveIngredient(medicineName: string): string | null {
 }
 
 /**
- * Get medicine image URL based on medicine name and type
+ * Get medicine image URL based on medicine name, type, and ID
  * Priority:
- * 1. Match by active ingredient name
- * 2. Match by medicine type
- * 3. Use default fallback
+ * 1. Match by active ingredient name (for common medicines)
+ * 2. Use hash-based selection for variety (ensures different images)
+ * 3. Never use default - always show varied images
  */
 export function getMedicineImage(
   medicineName: string,
   medicineType: string | null,
-  manufacturer?: string | null
+  manufacturer?: string | null,
+  medicineId?: string | number
 ): string {
   // Create cache key
-  const cacheKey = `${medicineName}_${manufacturer || ''}`.toLowerCase().replace(/\s+/g, '_');
+  const cacheKey = `${medicineName}_${medicineId || ''}`.toLowerCase().replace(/\s+/g, '_');
   
   // Check memory cache first
   if (imageCache[cacheKey]) {
     return imageCache[cacheKey];
   }
   
-  // Try to find by active ingredient
+  // Try to find by active ingredient (for common medicines)
   const ingredient = extractActiveIngredient(medicineName);
   if (ingredient && MEDICINE_NAME_IMAGES[ingredient]) {
     const imageUrl = MEDICINE_NAME_IMAGES[ingredient];
@@ -120,28 +140,14 @@ export function getMedicineImage(
     return imageUrl;
   }
   
-  // Fallback to type-based image
-  const fallbackImage = getFallbackImage(medicineType);
-  imageCache[cacheKey] = fallbackImage;
+  // Use hash-based selection for variety (ensures each medicine gets different image)
+  const hashSource = medicineId ? medicineId.toString() : medicineName;
+  const hash = hashString(hashSource);
+  const imageIndex = hash % ALL_MEDICINE_IMAGES.length;
+  const imageUrl = ALL_MEDICINE_IMAGES[imageIndex];
   
-  return fallbackImage;
-}
-
-/**
- * Get fallback image based on medicine type
- */
-function getFallbackImage(type: string | null): string {
-  if (!type) return TYPE_FALLBACK_IMAGES.default;
-  
-  // Check for exact match
-  if (TYPE_FALLBACK_IMAGES[type]) return TYPE_FALLBACK_IMAGES[type];
-  
-  // Check for partial match (case-insensitive)
-  const typeKey = Object.keys(TYPE_FALLBACK_IMAGES).find(key => 
-    type.toLowerCase().includes(key.toLowerCase())
-  );
-  
-  return typeKey ? TYPE_FALLBACK_IMAGES[typeKey] : TYPE_FALLBACK_IMAGES.default;
+  imageCache[cacheKey] = imageUrl;
+  return imageUrl;
 }
 
 /**
@@ -149,10 +155,10 @@ function getFallbackImage(type: string | null): string {
  * This can be called when loading a page to cache images in advance
  */
 export function preloadMedicineImages(
-  medicines: Array<{ name: string; type: string | null; manufacturer?: string | null }>
+  medicines: Array<{ name: string; type: string | null; manufacturer?: string | null; id?: string | number }>
 ): void {
   medicines.forEach(med => {
-    getMedicineImage(med.name, med.type, med.manufacturer);
+    getMedicineImage(med.name, med.type, med.manufacturer, med.id);
   });
 }
 
