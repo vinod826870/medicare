@@ -25,6 +25,7 @@ const STORAGE_KEY = 'medicine_reminders';
 const Reminders = () => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
+  const [currentTime, setCurrentTime] = useState('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -79,11 +80,39 @@ const Reminders = () => {
       const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
       const today = now.toDateString();
 
-      reminders.forEach(reminder => {
-        if (!reminder.active) return;
-        if (reminder.time !== currentTime) return;
-        if (reminder.lastTriggered === today) return;
+      // Update current time display
+      setCurrentTime(currentTime);
 
+      console.log('Checking reminders at:', currentTime, 'on', today);
+      console.log('Active reminders:', reminders.filter(r => r.active));
+
+      reminders.forEach(reminder => {
+        console.log(`Checking reminder: ${reminder.medicineName}`, {
+          active: reminder.active,
+          reminderTime: reminder.time,
+          currentTime: currentTime,
+          match: reminder.time === currentTime,
+          lastTriggered: reminder.lastTriggered,
+          today: today,
+        });
+
+        if (!reminder.active) {
+          console.log(`Skipping ${reminder.medicineName}: not active`);
+          return;
+        }
+        
+        if (reminder.time !== currentTime) {
+          console.log(`Skipping ${reminder.medicineName}: time mismatch (${reminder.time} !== ${currentTime})`);
+          return;
+        }
+        
+        if (reminder.lastTriggered === today) {
+          console.log(`Skipping ${reminder.medicineName}: already triggered today`);
+          return;
+        }
+
+        console.log(`🔔 TRIGGERING NOTIFICATION for ${reminder.medicineName}`);
+        
         // Trigger notification
         triggerNotification(reminder);
 
@@ -108,12 +137,27 @@ const Reminders = () => {
   }, [reminders]);
 
   const triggerNotification = (reminder: Reminder) => {
+    console.log('🔔 triggerNotification called for:', reminder.medicineName);
+    
     // Play sound
     if (audioRef.current) {
-      audioRef.current.play().catch(err => console.error('Error playing sound:', err));
+      console.log('Playing audio notification...');
+      audioRef.current.play().catch(err => {
+        console.error('Error playing sound:', err);
+        // Try to create a new audio element if the first one fails
+        try {
+          const beep = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGWi77eefTRAMUKfj8LZjHAY4ktfyzHksBSR3x/DdkEAKFF606+uoVRQKRp/g8r5sIQUrgs7y2Yk2CBlou+3nn00QDFC');
+          beep.play();
+        } catch (e) {
+          console.error('Failed to play backup sound:', e);
+        }
+      });
+    } else {
+      console.warn('Audio element not initialized');
     }
 
     // Show toast notification
+    console.log('Showing toast notification...');
     toast.success(
       <div className="flex items-start gap-3">
         <BellRing className="h-5 w-5 text-primary mt-0.5" />
@@ -130,26 +174,71 @@ const Reminders = () => {
     );
 
     // Show browser notification
+    console.log('Notification permission:', notificationPermission);
     if (notificationPermission === 'granted') {
-      new Notification('Medicine Reminder', {
-        body: `Time to take ${reminder.medicineName} - ${reminder.dosage}`,
-        icon: '/favicon.ico',
-        badge: '/favicon.ico',
-        tag: reminder.id,
-        requireInteraction: true,
-      });
+      console.log('Creating browser notification...');
+      try {
+        const notification = new Notification('Medicine Reminder', {
+          body: `Time to take ${reminder.medicineName} - ${reminder.dosage}`,
+          icon: '/favicon.ico',
+          badge: '/favicon.ico',
+          tag: reminder.id,
+          requireInteraction: true,
+        });
+        console.log('Browser notification created successfully');
+        
+        notification.onclick = () => {
+          window.focus();
+          notification.close();
+        };
+      } catch (error) {
+        console.error('Error creating browser notification:', error);
+      }
+    } else {
+      console.warn('Browser notifications not granted. Current permission:', notificationPermission);
     }
   };
 
   const requestNotificationPermission = async () => {
-    if ('Notification' in window && Notification.permission === 'default') {
+    if (!('Notification' in window)) {
+      toast.error('Your browser does not support notifications');
+      return;
+    }
+
+    const currentPermission = Notification.permission;
+    
+    if (currentPermission === 'granted') {
+      toast.success('Notifications are already enabled!');
+      return;
+    }
+
+    if (currentPermission === 'denied') {
+      toast.error('Notifications are blocked. Please enable them in your browser settings.', {
+        duration: 5000,
+      });
+      return;
+    }
+
+    // Permission is 'default', request it
+    try {
       const permission = await Notification.requestPermission();
       setNotificationPermission(permission);
+      
       if (permission === 'granted') {
-        toast.success('Notifications enabled!');
+        toast.success('Notifications enabled successfully!');
+        // Test notification to confirm it works
+        setTimeout(() => {
+          new Notification('MediCare Reminders', {
+            body: 'Notifications are now enabled! You will receive medicine reminders.',
+            icon: '/favicon.ico',
+          });
+        }, 500);
       } else {
-        toast.error('Notifications denied. You won\'t receive alerts.');
+        toast.error('Notifications were denied. You won\'t receive alerts.');
       }
+    } catch (error) {
+      console.error('Error requesting notification permission:', error);
+      toast.error('Failed to request notification permission');
     }
   };
 
@@ -354,6 +443,30 @@ const Reminders = () => {
           </Dialog>
           </div>
         </div>
+
+        {/* System Status Info */}
+        {reminders.length > 0 && (
+          <Card className="mb-6 bg-muted/30">
+            <CardContent className="py-4">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-3">
+                  <Clock className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Current Time: {currentTime || 'Loading...'}</p>
+                    <p className="text-xs text-muted-foreground">
+                      System checks every 30 seconds • {reminders.filter(r => r.active).length} active reminder(s)
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant={notificationPermission === 'granted' ? 'default' : 'secondary'}>
+                    {notificationPermission === 'granted' ? '✓ Notifications Enabled' : '⚠ Notifications Disabled'}
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Reminders List */}
         {reminders.length === 0 ? (
