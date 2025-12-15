@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider as MiaodaAuthProvider } from 'miaoda-auth-react';
 import { AuthProvider } from './contexts/AuthContext';

@@ -57,6 +57,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAdmin = profile?.role === 'admin';
 
+  if (loading) {
+    return (
+      <AuthContext.Provider value={{ user, profile, loading, isAdmin, signOut, refreshProfile }}>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      </AuthContext.Provider>
+    );
+  }
+
   return (
     <AuthContext.Provider value={{ user, profile, loading, isAdmin, signOut, refreshProfile }}>
       {children}
