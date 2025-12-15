@@ -4,8 +4,7 @@
 MediCare Online Pharmacy
 
 ## 2. Website Description
-An online medicine platform that enables users to conveniently browse, search, and purchase medicines while providing administrators with comprehensive management capabilities through an enhanced admin dashboard. The website emphasizes user convenience, secure transactions, streamlined inventory updates, and rich interactive features. Medicine data is retrieved from Supabase database.
-
+An online medicine platform that enables users to conveniently browse, search, and purchase medicines while providing administrators with comprehensive management capabilities through an enhanced admin dashboard. The website emphasizes user convenience, secure transactions, streamlined inventory updates, and rich interactive features. Medicine data is retrieved from Supabase database.\n
 ## 3. Core Features
 \n### 3.1 User Features
 \n#### 3.1.1 Account & Authentication
@@ -26,8 +25,7 @@ An online medicine platform that enables users to conveniently browse, search, a
 - **Prescription Upload**: Users can upload prescription images for verification before purchasing prescription medicines
 - **Auto-Refill Reminders**: Set automatic reminders for recurring medicine purchases
 - **Order Notifications**: SMS and email notifications for order confirmation, shipping, and delivery updates
-
-#### 3.1.4 Personalization & Engagement
+\n#### 3.1.4 Personalization & Engagement
 - **Wishlist**: Users can save medicines to a wishlist for future reference and easy access. **Live Wishlist Counter**: Display real-time item count badge in the header that updates instantly when items are added or removed from the wishlist
 - **Product Reviews & Ratings**: Users can rate and review purchased medicines to help other customers make informed decisions
 - **Medicine Comparison**: Users can compare up to 4 medicines side-by-side based on price, composition, manufacturer, and other attributes. The comparison feature retrieves medicine data from the medicine_data table in Supabase database, ensuring consistency with the main medicines page. Users can search and add medicines to comparison using the same search functionality that queries the medicine_data table
@@ -36,8 +34,16 @@ An online medicine platform that enables users to conveniently browse, search, a
 - **Loyalty Program**: Earn points on purchases and redeem for discounts\n- **Referral Program**: Invite friends and earn rewards for successful referrals
 
 #### 3.1.5 Health & Wellness
-- **Health Blog**: Access informative articles about health tips, medicine usage guidelines, and wellness advice. Blog articles are stored and managed in the Supabase database, allowing administrators to create, edit, and publish content through the admin dashboard\n- **Medicine Reminders**: Set daily reminders for taking medicines with dosage information\n- **Health Tracker**: Track vital health metrics like blood pressure, blood sugar, and weight
-- **Symptom Checker**: Interactive tool to check symptoms and get medicine suggestions (disclaimer included)
+- **Health Blog**: Access informative articles about health tips, medicine usage guidelines, and wellness advice. Blog articles are stored and managed in the Supabase database, allowing administrators to create, edit, and publish content through the admin dashboard
+- **Medicine Reminders**: Set daily reminders for taking medicines with dosage information. **Enhanced Reminder Notifications**:
+  - When a reminder time is reached, the system will trigger multiple notification methods:\n    - **Browser Notification**: Display a browser push notification with medicine name and dosage details
+    - **Audio Alert**: Play a notification sound to alert the user
+    - **Visual Popup**: Show an on-screen popup modal with reminder details and action buttons (Mark as Taken / Snooze / Dismiss)
+  - **Reminder Persistence**: All reminder settings are automatically saved to the database and persist across page navigation. When users leave the reminders page and return later, all previously set reminders will be restored and displayed exactly as configured, not reset to default state
+  - **Background Monitoring**: Reminders continue to function even when the user navigates to other pages within the application
+  - Users can snooze reminders for 5, 10, or 15 minutes
+  - Mark reminders as taken to track medication adherence
+- **Health Tracker**: Track vital health metrics like blood pressure, blood sugar, and weight\n- **Symptom Checker**: Interactive tool to check symptoms and get medicine suggestions (disclaimer included)
 - **Medicine Interaction Checker**: Check potential interactions between multiple medicines
 - **Dosage Calculator**: Calculate appropriate dosage based on age, weight, and condition
 - **First Aid Guide**: Quick access to first aid instructions for common emergencies
@@ -73,8 +79,8 @@ An online medicine platform that enables users to conveniently browse, search, a
 - **Order Processing**: View and manage customer orders with filtering options (by status, date, customer)\n- **Order Status Updates**: Update order status (pending, confirmed, shipped, delivered, cancelled)
 - **Invoice Generation**: Automatically generate and send invoices to customers
 - **Refund Management**: Process refunds and manage return requests
-
-#### 3.2.4 Customer Management\n- **User Database**: View and manage registered users with search and filter capabilities
+\n#### 3.2.4 Customer Management
+- **User Database**: View and manage registered users with search and filter capabilities
 - **Customer Activity**: Track customer purchase history, order frequency, and spending patterns
 - **Customer Support**: Manage customer inquiries from contact form submissions
 - **User Verification**: Verify prescription uploads and approve prescription medicine orders
@@ -101,8 +107,7 @@ An online medicine platform that enables users to conveniently browse, search, a
 - **Customer Analytics**: Analyze customer demographics, behavior, and preferences
 - **Inventory Reports**: Track stock movement, turnover rates, and inventory valuation
 - **Revenue Analytics**: Monitor revenue streams, profit margins, and financial performance
-
-#### 3.2.7 Settings & Configuration
+\n#### 3.2.7 Settings & Configuration
 - **Payment Settings**: Configure Stripe payment gateway settings\n- **Email Settings**: Manage email templates and notification preferences
 - **Shipping Settings**: Configure shipping zones, rates, and delivery options
 - **Tax Configuration**: Set up tax rates and rules
@@ -228,14 +233,23 @@ The platform will organize medicines based on the'type' column in the medicine_d
 
 #### 9.1.4 Health & Wellness Pages
 - **Health Blog**: Browse health articles by category with search functionality. Articles are retrieved from the blog_posts table in Supabase database\n- **Blog Article Page**: Read full articles with related posts and comment section
-- **Medicine Reminders**: Set and manage medicine reminders with notification settings
+- **Medicine Reminders**: Set and manage medicine reminders with notification settings. **Enhanced Features**:
+  - Visual interface to add, edit, and delete reminders
+  - Each reminder displays medicine name, dosage, time, and frequency
+  - Toggle switches to enable/disable individual reminders
+  - Notification sound selection option
+  - Test notification button to preview alerts
+  - All reminder data is saved to the database and persists across sessions
+  - When returning to the reminders page, all previously configured reminders are automatically loaded and displayed
+  - Active reminders continue to trigger notifications even when navigating to other pages
 - **Health Tracker**: Log and visualize health metrics over time
 - **Symptom Checker**: Interactive symptom assessment tool
 - **Medicine Interaction Checker**: Check interactions between multiple medicines
 - **Dosage Calculator**: Calculate appropriate dosage based on patient information
 - **First Aid Guide**: Browse first aid instructions by emergency type
 - **Health Tips**: Daily health tips and wellness advice
-\n#### 9.1.5 Support & Information Pages
+
+#### 9.1.5 Support & Information Pages
 - **Contact Us Page**: Contact form, phone number, email, and live chat access
 - **Live Chat**: Real-time chat interface with support representatives
 - **FAQ Page**: Frequently asked questions organized by category
@@ -247,8 +261,7 @@ The platform will organize medicines based on the'type' column in the medicine_d
 - **Privacy Policy**: Data protection and privacy information
 - **Terms & Conditions**: User agreement and terms of service
 - **Prescription Policy**: Guidelines for uploading and verifying prescriptions
-
-#### 9.1.6 Interactive & Engagement Pages
+\n#### 9.1.6 Interactive & Engagement Pages
 - **Community Forum**: Discussion boards for health topics with categories and threads
 - **Forum Thread Page**: View and participate in discussions
 - **Video Consultation**: Book and manage video consultations with healthcare professionals
@@ -264,7 +277,8 @@ The platform will organize medicines based on the'type' column in the medicine_d
 - **Subscription Management**: Manage auto-refill subscriptions
 - **Gift Cards**: Purchase and redeem gift cards\n- **Seasonal Health**: Seasonal health tips and relevant medicine recommendations
 
-### 9.2 Admin Pages\n- **Admin Login Page**: Secure login for administrators\n- **Dashboard Home**: Overview with key metrics and charts
+### 9.2 Admin Pages
+- **Admin Login Page**: Secure login for administrators\n- **Dashboard Home**: Overview with key metrics and charts
 - **Inventory Management Page**: Medicine list with add/edit/delete functionality
 - **Order Management Page**: Order list with status update and filtering options
 - **Customer Management Page**: User list and customer details
@@ -274,7 +288,8 @@ The platform will organize medicines based on the'type' column in the medicine_d
   - Edit existing blog posts
   - Delete blog posts
   - Preview blog posts before publishing
-  - Manage blog categories and tags\n  - View blog analytics (views, engagement)\n- **Settings Page**: System configuration and preferences
+  - Manage blog categories and tags
+  - View blog analytics (views, engagement)\n- **Settings Page**: System configuration and preferences
 \n## 10. Design Style\n
 ### 10.1 Color Scheme
 - Primary color: Clean medical blue (#2E86DE) conveying trust and professionalism

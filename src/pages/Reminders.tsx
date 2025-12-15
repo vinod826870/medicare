@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Bell, Clock, Trash2, Edit } from 'lucide-react';
+import { Plus, Bell, Clock, Trash2, Edit, BellRing } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Reminder {
@@ -17,29 +17,16 @@ interface Reminder {
   time: string;
   notes: string;
   active: boolean;
+  lastTriggered?: string;
 }
 
+const STORAGE_KEY = 'medicine_reminders';
+
 const Reminders = () => {
-  const [reminders, setReminders] = useState<Reminder[]>([
-    {
-      id: '1',
-      medicineName: 'Paracetamol 500mg',
-      dosage: '1 tablet',
-      frequency: 'daily',
-      time: '08:00',
-      notes: 'Take after breakfast',
-      active: true,
-    },
-    {
-      id: '2',
-      medicineName: 'Vitamin D3',
-      dosage: '1 capsule',
-      frequency: 'daily',
-      time: '09:00',
-      notes: 'Take with milk',
-      active: true,
-    },
-  ]);
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingReminder, setEditingReminder] = useState<Reminder | null>(null);
@@ -50,6 +37,134 @@ const Reminders = () => {
     time: '',
     notes: '',
   });
+
+  // Load reminders from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setReminders(Array.isArray(parsed) ? parsed : []);
+      } catch (error) {
+        console.error('Error loading reminders:', error);
+        setReminders([]);
+      }
+    }
+
+    // Request notification permission
+    if ('Notification' in window) {
+      setNotificationPermission(Notification.permission);
+      if (Notification.permission === 'default') {
+        Notification.requestPermission().then(permission => {
+          setNotificationPermission(permission);
+        });
+      }
+    }
+
+    // Create audio element for notification sound
+    audioRef.current = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGWi77eefTRAMUKfj8LZjHAY4ktfyzHksBSR3x/DdkEAKFF606+uoVRQKRp/g8r5sIQUrgs7y2Yk2CBlou+3nn00QDFC');
+  }, []);
+
+  // Save reminders to localStorage whenever they change
+  useEffect(() => {
+    if (reminders.length >= 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(reminders));
+    }
+  }, [reminders]);
+
+  // Check reminders every minute
+  useEffect(() => {
+    const checkReminders = () => {
+      const now = new Date();
+      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const today = now.toDateString();
+
+      reminders.forEach(reminder => {
+        if (!reminder.active) return;
+        if (reminder.time !== currentTime) return;
+        if (reminder.lastTriggered === today) return;
+
+        // Trigger notification
+        triggerNotification(reminder);
+
+        // Update lastTriggered
+        setReminders(prev => prev.map(r =>
+          r.id === reminder.id ? { ...r, lastTriggered: today } : r
+        ));
+      });
+    };
+
+    // Check immediately
+    checkReminders();
+
+    // Then check every 30 seconds
+    checkIntervalRef.current = setInterval(checkReminders, 30000);
+
+    return () => {
+      if (checkIntervalRef.current) {
+        clearInterval(checkIntervalRef.current);
+      }
+    };
+  }, [reminders]);
+
+  const triggerNotification = (reminder: Reminder) => {
+    // Play sound
+    if (audioRef.current) {
+      audioRef.current.play().catch(err => console.error('Error playing sound:', err));
+    }
+
+    // Show toast notification
+    toast.success(
+      <div className="flex items-start gap-3">
+        <BellRing className="h-5 w-5 text-primary mt-0.5" />
+        <div>
+          <p className="font-semibold">Medicine Reminder!</p>
+          <p className="text-sm">{reminder.medicineName}</p>
+          <p className="text-sm text-muted-foreground">Dosage: {reminder.dosage}</p>
+          {reminder.notes && <p className="text-xs text-muted-foreground mt-1">{reminder.notes}</p>}
+        </div>
+      </div>,
+      {
+        duration: 10000,
+      }
+    );
+
+    // Show browser notification
+    if (notificationPermission === 'granted') {
+      new Notification('Medicine Reminder', {
+        body: `Time to take ${reminder.medicineName} - ${reminder.dosage}`,
+        icon: '/favicon.ico',
+        badge: '/favicon.ico',
+        tag: reminder.id,
+        requireInteraction: true,
+      });
+    }
+  };
+
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+      if (permission === 'granted') {
+        toast.success('Notifications enabled!');
+      } else {
+        toast.error('Notifications denied. You won\'t receive alerts.');
+      }
+    }
+  };
+
+  const testNotification = () => {
+    const testReminder: Reminder = {
+      id: 'test',
+      medicineName: 'Test Medicine',
+      dosage: '1 tablet',
+      frequency: 'daily',
+      time: '00:00',
+      notes: 'This is a test notification',
+      active: true,
+    };
+    triggerNotification(testReminder);
+  };
 
   const handleAddReminder = () => {
     if (!formData.medicineName || !formData.dosage || !formData.time) {
@@ -129,28 +244,53 @@ const Reminders = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-4 xl:px-6 py-8">
+        {/* Notification Permission Banner */}
+        {notificationPermission !== 'granted' && (
+          <Card className="mb-6 border-primary/50 bg-primary/5">
+            <CardContent className="flex items-center justify-between py-4">
+              <div className="flex items-center gap-3">
+                <BellRing className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-semibold">Enable Notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Allow notifications to receive medicine reminders even when you're not on this page
+                  </p>
+                </div>
+              </div>
+              <Button onClick={requestNotificationPermission} size="sm">
+                Enable
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Medicine Reminders</h1>
             <p className="text-muted-foreground">Never miss a dose with smart reminders</p>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => {
-                setEditingReminder(null);
-                setFormData({
-                  medicineName: '',
-                  dosage: '',
-                  frequency: 'daily',
-                  time: '',
-                  notes: '',
-                });
-              }}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Reminder
-              </Button>
-            </DialogTrigger>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={testNotification} size="sm">
+              <BellRing className="mr-2 h-4 w-4" />
+              Test Alert
+            </Button>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={() => {
+                  setEditingReminder(null);
+                  setFormData({
+                    medicineName: '',
+                    dosage: '',
+                    frequency: 'daily',
+                    time: '',
+                    notes: '',
+                  });
+                }}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Reminder
+                </Button>
+              </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>{editingReminder ? 'Edit Reminder' : 'Add New Reminder'}</DialogTitle>
@@ -212,6 +352,7 @@ const Reminders = () => {
               </div>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
 
         {/* Reminders List */}
