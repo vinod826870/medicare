@@ -7,10 +7,18 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies & build
 node_modules
 dist
 dist-ssr
 output
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Local files
 *.local
 package-lock.json
 
