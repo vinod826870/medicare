@@ -336,31 +336,33 @@ const Reminders = () => {
         {/* Notification Permission Banner */}
         {notificationPermission !== 'granted' && (
           <Card className="mb-6 border-primary/50 bg-primary/5">
-            <CardContent className="flex items-center justify-between py-4">
-              <div className="flex items-center gap-3">
-                <BellRing className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-semibold">Enable Notifications</p>
-                  <p className="text-sm text-muted-foreground">
-                    Allow notifications to receive medicine reminders even when you're not on this page
-                  </p>
+            <CardContent className="py-4">
+              <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                <div className="flex items-start xl:items-center gap-3">
+                  <BellRing className="h-5 w-5 text-primary flex-shrink-0 mt-0.5 xl:mt-0" />
+                  <div>
+                    <p className="font-semibold">Enable Notifications</p>
+                    <p className="text-sm text-muted-foreground">
+                      Allow notifications to receive medicine reminders even when you're not on this page
+                    </p>
+                  </div>
                 </div>
+                <Button onClick={requestNotificationPermission} size="sm" className="w-full xl:w-auto">
+                  Enable
+                </Button>
               </div>
-              <Button onClick={requestNotificationPermission} size="sm">
-                Enable
-              </Button>
             </CardContent>
           </Card>
         )}
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Medicine Reminders</h1>
-            <p className="text-muted-foreground">Never miss a dose with smart reminders</p>
+            <h1 className="text-2xl xl:text-3xl font-bold text-foreground">Medicine Reminders</h1>
+            <p className="text-sm xl:text-base text-muted-foreground">Never miss a dose with smart reminders</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={testNotification} size="sm">
+            <Button variant="outline" onClick={testNotification} size="sm" className="flex-1 xl:flex-none">
               <BellRing className="mr-2 h-4 w-4" />
               Test Alert
             </Button>
@@ -375,7 +377,7 @@ const Reminders = () => {
                     time: '',
                     notes: '',
                   });
-                }}>
+                }} className="flex-1 xl:flex-none">
                   <Plus className="mr-2 h-4 w-4" />
                   Add Reminder
                 </Button>
@@ -482,26 +484,26 @@ const Reminders = () => {
             {reminders.map((reminder) => (
               <Card key={reminder.id} className={!reminder.active ? 'opacity-60' : ''}>
                 <CardHeader>
-                  <div className="flex items-start justify-between">
+                  <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <CardTitle className="text-xl">{reminder.medicineName}</CardTitle>
-                        <Badge variant={reminder.active ? 'default' : 'secondary'}>
+                      <div className="flex flex-col xl:flex-row xl:items-center gap-2 xl:gap-3 mb-2">
+                        <CardTitle className="text-lg xl:text-xl">{reminder.medicineName}</CardTitle>
+                        <Badge variant={reminder.active ? 'default' : 'secondary'} className="w-fit">
                           {reminder.active ? 'Active' : 'Inactive'}
                         </Badge>
                       </div>
-                      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                      <div className="flex flex-wrap gap-3 xl:gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-2">
-                          <Bell className="h-4 w-4" />
-                          {getFrequencyLabel(reminder.frequency)}
+                          <Bell className="h-4 w-4 flex-shrink-0" />
+                          <span>{getFrequencyLabel(reminder.frequency)}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4" />
-                          {reminder.time}
+                          <Clock className="h-4 w-4 flex-shrink-0" />
+                          <span>{reminder.time}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 xl:flex-shrink-0">
                       <Button variant="outline" size="icon" onClick={() => openEditDialog(reminder)}>
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -512,7 +514,7 @@ const Reminders = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
+                  <div className="space-y-2 text-sm xl:text-base">
                     <p><strong>Dosage:</strong> {reminder.dosage}</p>
                     {reminder.notes && <p><strong>Notes:</strong> {reminder.notes}</p>}
                   </div>
@@ -521,6 +523,7 @@ const Reminders = () => {
                       variant={reminder.active ? 'outline' : 'default'}
                       size="sm"
                       onClick={() => toggleReminder(reminder.id)}
+                      className="w-full xl:w-auto"
                     >
                       {reminder.active ? 'Deactivate' : 'Activate'}
                     </Button>

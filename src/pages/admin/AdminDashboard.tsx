@@ -123,7 +123,7 @@ const AdminDashboard = () => {
   const statCards = [
     {
       title: 'Total Revenue',
-      value: `$${stats.totalRevenue.toFixed(2)}`,
+      value: `₹${stats.totalRevenue.toFixed(2)}`,
       icon: DollarSign,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
@@ -319,7 +319,7 @@ const AdminDashboard = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">${(order.total_amount / 100).toFixed(2)}</p>
+                      <p className="font-medium">₹{(order.total_amount / 100).toFixed(2)}</p>
                       {getStatusBadge(order.status)}
                     </div>
                   </div>
