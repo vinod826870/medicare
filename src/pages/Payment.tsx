@@ -305,7 +305,7 @@ const Payment = () => {
                   {paymentMethod === 'cod' && (
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <p className="text-sm text-blue-800">
-                        You will pay <strong>${paymentData.total_amount.toFixed(2)}</strong> in cash when your order is delivered.
+                        You will pay <strong>₹{paymentData.total_amount.toFixed(2)}</strong> in cash when your order is delivered.
                       </p>
                     </div>
                   )}
@@ -361,7 +361,7 @@ const Payment = () => {
                         <Lock className="w-4 h-4 mr-2" />
                         {paymentMethod === 'stripe' 
                           ? `Continue to Stripe Checkout` 
-                          : `Pay $${paymentData.total_amount.toFixed(2)}`
+                          : `Pay ₹${paymentData.total_amount.toFixed(2)}`
                         }
                       </>
                     )}
@@ -391,7 +391,7 @@ const Payment = () => {
                         <p className="text-muted-foreground">Qty: {item.quantity}</p>
                       </div>
                       <p className="font-medium">
-                        ${(item.price_at_purchase * item.quantity).toFixed(2)}
+                        ₹{(item.price_at_purchase * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   ))}
@@ -416,7 +416,7 @@ const Payment = () => {
                   </div>
                   <div className="flex justify-between font-bold text-lg border-t pt-2">
                     <span>Total</span>
-                    <span>${paymentData.total_amount.toFixed(2)}</span>
+                    <span>₹{paymentData.total_amount.toFixed(2)}</span>
                   </div>
                 </div>
 

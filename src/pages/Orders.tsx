@@ -168,11 +168,11 @@ const Orders = () => {
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-foreground">{item.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          Quantity: {item.quantity} × ${(item.price / 100).toFixed(2)}
+                          Quantity: {item.quantity} × ₹{(item.price / 100).toFixed(2)}
                         </p>
                       </div>
                       <p className="font-semibold text-foreground">
-                        ${((item.price * item.quantity) / 100).toFixed(2)}
+                        ₹{((item.price * item.quantity) / 100).toFixed(2)}
                       </p>
                     </div>
                   ))}
@@ -181,7 +181,7 @@ const Orders = () => {
                     <div className="flex justify-between items-center">
                       <span className="font-semibold text-foreground">Total Amount</span>
                       <span className="text-xl font-bold text-primary">
-                        ${(order.total_amount / 100).toFixed(2)}
+                        ₹{(order.total_amount / 100).toFixed(2)}
                       </span>
                     </div>
                   </div>

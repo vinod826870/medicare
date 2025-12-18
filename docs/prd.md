@@ -9,8 +9,7 @@ An online medicine platform that enables users to conveniently browse, search, a
 \n### 3.1 User Features
 \n#### 3.1.1 Account & Authentication
 - **User Registration & Login**: Allow users to create accounts and securely log in to access personalized services
-- **Social Login**: Quick login via Google, Facebook, or Apple accounts
-- **Two-Factor Authentication**: Optional2FA for enhanced account security
+- **Social Login**: Quick login via Google, Facebook, or Apple accounts\n- **Two-Factor Authentication**: Optional2FA for enhanced account security
 - **Password Recovery**: Email-based password reset functionality
 \n#### 3.1.2 Medicine Discovery & Shopping
 - **Medicine Search & Browse**: Enable users to search for medicines by name, category, manufacturer, or composition, and browse through organized medicine catalogs retrieved from Supabase database. Each medicine listing displays information from the medicine_data table. Search functionality is optimized for fast performance across large dataset\n- **Advanced Filters**: Filter by price range, manufacturer, medicine type, pack size, and availability\n- **Voice Search**: Search medicines using voice commands for hands-free convenience
@@ -34,8 +33,7 @@ An online medicine platform that enables users to conveniently browse, search, a
 - **Loyalty Program**: Earn points on purchases and redeem for discounts\n- **Referral Program**: Invite friends and earn rewards for successful referrals
 
 #### 3.1.5 Health & Wellness
-- **Health Blog**: Access informative articles about health tips, medicine usage guidelines, and wellness advice. Blog articles are stored and managed in the Supabase database, allowing administrators to create, edit, and publish content through the admin dashboard
-- **Medicine Reminders**: Set daily reminders for taking medicines with dosage information. **Enhanced Reminder Notifications**:
+- **Health Blog**: Access informative articles about health tips, medicine usage guidelines, and wellness advice. Blog articles are stored and managed in the Supabase database, allowing administrators to create, edit, and publish content through the admin dashboard\n- **Medicine Reminders**: Set daily reminders for taking medicines with dosage information. **Enhanced Reminder Notifications**:
   - When a reminder time is reached, the system will trigger multiple notification methods:\n    - **Browser Notification**: Display a browser push notification with medicine name and dosage details
     - **Audio Alert**: Play a notification sound to alert the user
     - **Visual Popup**: Show an on-screen popup modal with reminder details and action buttons (Mark as Taken / Snooze / Dismiss)
@@ -49,8 +47,7 @@ An online medicine platform that enables users to conveniently browse, search, a
 - **First Aid Guide**: Quick access to first aid instructions for common emergencies
 
 #### 3.1.6 Communication & Support
-- **Contact Form**: Users can submit inquiries or feedback through a contact form. Form submissions will be stored in the database and automatically sent via email to vinod826870@gmail.com
-- **Live Chat Support**: Real-time chat with customer support representatives
+- **Contact Form**: Users can submit inquiries or feedback through a contact form. Form submissions will be stored in the database and automatically sent via email to vinod826870@gmail.com\n- **Live Chat Support**: Real-time chat with customer support representatives
 - **Chatbot Assistant**: AI-powered chatbot for instant answers to common questions
 - **Video Consultation**: Book online consultations with pharmacists or healthcare professionals
 - **Community Forum**: Discuss health topics and share experiences with other users\n\n#### 3.1.7 User Profile & Settings
@@ -89,8 +86,7 @@ An online medicine platform that enables users to conveniently browse, search, a
 - **Blog Management**: Create, edit, publish, and delete health-related blog articles. Blog posts are stored in a dedicated blog_posts table in the Supabase database with the following structure:
   - **id**: Unique identifier for each blog post
   - **title**: Blog post title
-  - **content**: Full article content (supports rich text/HTML)
-  - **author**: Author name or admin user ID
+  - **content**: Full article content (supports rich text/HTML)\n  - **author**: Author name or admin user ID
   - **category**: Blog category (e.g., Health Tips, Medicine Guide, Wellness)
   - **featured_image**: Image URL for the blog post thumbnail
   - **published_date**: Publication date and time
@@ -160,8 +156,7 @@ Table columns:
 - Implement client-side caching to reduce repeated API calls
 - Use query parameters for filtering and sorting to minimize data transfer
 - Consider implementing search result ranking based on relevance\n\n## 5. Medicine Categories
-The platform will organize medicines based on the'type' column in the medicine_data table, covering various medicine categories dynamically retrieved from the database. Category filters will be displayed in the sidebar for easy navigation.
-
+The platform will organize medicines based on the'type' column in the medicine_data table, covering various medicine categories dynamically retrieved from the database. Category filters will be displayed in the sidebar for easy navigation.\n
 ## 6. Payment Configuration
 
 ### 6.1 Stripe Payment Integration

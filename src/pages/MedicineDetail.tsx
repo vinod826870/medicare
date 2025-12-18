@@ -147,7 +147,7 @@ const MedicineDetail = () => {
             <div className="mb-6">
               <div className="flex items-baseline gap-2 mb-4">
                 <span className="text-4xl font-bold text-primary">
-                  ${medicine.price.toFixed(2)}
+                  ₹{medicine.price.toFixed(2)}
                 </span>
               </div>
 

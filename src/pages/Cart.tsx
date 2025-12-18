@@ -175,7 +175,7 @@ const Cart = () => {
                         {item.medicine?.name}
                       </h3>
                       <p className="text-sm text-muted-foreground mb-2">
-                        ${item.medicine?.price.toFixed(2)} each
+                        ₹{item.medicine?.price.toFixed(2)} each
                       </p>
 
                       <div className="flex items-center gap-2">
@@ -212,7 +212,7 @@ const Cart = () => {
 
                     <div className="flex flex-col items-end justify-between">
                       <p className="font-bold text-foreground">
-                        ${((item.medicine?.price || 0) * item.quantity).toFixed(2)}
+                        ₹{((item.medicine?.price || 0) * item.quantity).toFixed(2)}
                       </p>
                       <Button
                         size="icon"
@@ -236,21 +236,21 @@ const Cart = () => {
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>₹{subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
                     <span>Shipping</span>
-                    <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+                    <span>{shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}</span>
                   </div>
                   {subtotal < 50 && (
                     <p className="text-xs text-muted-foreground">
-                      Add ${(50 - subtotal).toFixed(2)} more for free shipping
+                      Add ₹{(50 - subtotal).toFixed(2)} more for free shipping
                     </p>
                   )}
                   <div className="border-t border-border pt-3">
                     <div className="flex justify-between text-lg font-bold text-foreground">
                       <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
+                      <span>₹{total.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>

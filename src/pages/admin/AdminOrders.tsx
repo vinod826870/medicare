@@ -78,7 +78,7 @@ const AdminOrders = () => {
                   <TableRow key={order.id}>
                     <TableCell className="font-mono text-sm">{order.id.slice(0, 8)}</TableCell>
                     <TableCell>{order.customer_email || order.customer_name || 'Guest'}</TableCell>
-                    <TableCell>${(order.total_amount / 100).toFixed(2)}</TableCell>
+                    <TableCell>₹{(order.total_amount / 100).toFixed(2)}</TableCell>
                     <TableCell>
                       <Badge variant={order.status === 'completed' ? 'default' : 'outline'}>
                         {order.status}
