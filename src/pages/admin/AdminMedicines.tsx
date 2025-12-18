@@ -93,7 +93,7 @@ const AdminMedicines = () => {
                       </TableCell>
                       <TableCell className="font-medium">{medicine.name}</TableCell>
                       <TableCell>{medicine.category}</TableCell>
-                      <TableCell>${medicine.price.toFixed(2)}</TableCell>
+                      <TableCell>₹{medicine.price.toFixed(2)}</TableCell>
                       <TableCell>{medicine.manufacturer}</TableCell>
                       <TableCell>
                         {medicine.prescription_required ? (

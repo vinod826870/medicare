@@ -76,7 +76,7 @@ const Wishlist = () => {
                 <CardContent className="p-4">
                   <h3 className="font-semibold mb-2">{item.name}</h3>
                   <p className="text-sm text-muted-foreground mb-2">{item.manufacturer}</p>
-                  <p className="text-2xl font-bold text-primary mb-4">${item.price.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-primary mb-4">₹{item.price.toFixed(2)}</p>
                   <div className="flex gap-2">
                     <Button onClick={() => handleAddToCart(item)} className="flex-1">
                       <ShoppingCart className="mr-2 h-4 w-4" />
