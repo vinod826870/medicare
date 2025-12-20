@@ -16,6 +16,10 @@ import Reminders from './pages/Reminders';
 import Wishlist from './pages/Wishlist';
 import HealthCalculator from './pages/HealthCalculator';
 import MedicineComparison from './pages/MedicineComparison';
+import SymptomChecker from './pages/SymptomChecker';
+import InteractionChecker from './pages/InteractionChecker';
+import Prescriptions from './pages/Prescriptions';
+import Substitutes from './pages/Substitutes';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminMedicines from './pages/admin/AdminMedicines';
 import AdminOrders from './pages/admin/AdminOrders';
@@ -23,6 +27,11 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminBlog from './pages/admin/AdminBlog';
+import AdminSymptoms from './pages/admin/AdminSymptoms';
+import AdminInteractions from './pages/admin/AdminInteractions';
+import AdminSubstitutes from './pages/admin/AdminSubstitutes';
+import AdminReviews from './pages/admin/AdminReviews';
+import AdminPrescriptions from './pages/admin/AdminPrescriptions';
 import NotFound from './pages/NotFound';
 
 interface RouteConfig {
@@ -136,6 +145,30 @@ const routes: RouteConfig[] = [
     visible: false
   },
   {
+    name: 'Symptom Checker',
+    path: '/symptom-checker',
+    element: <SymptomChecker />,
+    visible: false
+  },
+  {
+    name: 'Interaction Checker',
+    path: '/interaction-checker',
+    element: <InteractionChecker />,
+    visible: false
+  },
+  {
+    name: 'Prescriptions',
+    path: '/prescriptions',
+    element: <Prescriptions />,
+    visible: false
+  },
+  {
+    name: 'Medicine Substitutes',
+    path: '/substitutes',
+    element: <Substitutes />,
+    visible: false
+  },
+  {
     name: 'Admin Dashboard',
     path: '/admin',
     element: <AdminDashboard />,
@@ -175,6 +208,36 @@ const routes: RouteConfig[] = [
     name: 'Admin Blog',
     path: '/admin/blog',
     element: <AdminBlog />,
+    visible: false
+  },
+  {
+    name: 'Admin Symptoms',
+    path: '/admin/symptoms',
+    element: <AdminSymptoms />,
+    visible: false
+  },
+  {
+    name: 'Admin Interactions',
+    path: '/admin/interactions',
+    element: <AdminInteractions />,
+    visible: false
+  },
+  {
+    name: 'Admin Substitutes',
+    path: '/admin/substitutes',
+    element: <AdminSubstitutes />,
+    visible: false
+  },
+  {
+    name: 'Admin Reviews',
+    path: '/admin/reviews',
+    element: <AdminReviews />,
+    visible: false
+  },
+  {
+    name: 'Admin Prescriptions',
+    path: '/admin/prescriptions',
+    element: <AdminPrescriptions />,
     visible: false
   },
   {

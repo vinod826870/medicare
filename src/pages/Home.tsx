@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ShieldCheck, Truck, Clock, ArrowRight } from 'lucide-react';
+import { Search, ShieldCheck, Truck, Clock, ArrowRight, Stethoscope, AlertTriangle, FileText, TrendingDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -143,6 +143,97 @@ const Home = () => {
                 <p className="text-sm text-muted-foreground">Safe and encrypted payment processing</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 bg-primary/5">
+        <div className="max-w-7xl mx-auto px-4 xl:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-2">Health Tools</h2>
+            <p className="text-muted-foreground">Powerful tools to help you make informed health decisions</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all duration-300 group border-2 hover:border-primary"
+              onClick={() => navigate('/symptom-checker')}
+            >
+              <CardContent className="p-6">
+                <div className="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                  <Stethoscope className="w-7 h-7 text-primary" />
+                </div>
+                <h3 className="font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
+                  Symptom Checker
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Select your symptoms and get medicine suggestions
+                </p>
+                <Button variant="ghost" size="sm" className="group-hover:text-primary">
+                  Try Now <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all duration-300 group border-2 hover:border-primary"
+              onClick={() => navigate('/interaction-checker')}
+            >
+              <CardContent className="p-6">
+                <div className="w-14 h-14 bg-orange-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-orange-200 transition-colors">
+                  <AlertTriangle className="w-7 h-7 text-orange-600" />
+                </div>
+                <h3 className="font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
+                  Interaction Checker
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Check if your medicines can be safely taken together
+                </p>
+                <Button variant="ghost" size="sm" className="group-hover:text-primary">
+                  Check Now <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all duration-300 group border-2 hover:border-primary"
+              onClick={() => navigate('/prescriptions')}
+            >
+              <CardContent className="p-6">
+                <div className="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
+                  <FileText className="w-7 h-7 text-blue-600" />
+                </div>
+                <h3 className="font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
+                  My Prescriptions
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Upload and manage your medical prescriptions
+                </p>
+                <Button variant="ghost" size="sm" className="group-hover:text-primary">
+                  Manage <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all duration-300 group border-2 hover:border-primary"
+              onClick={() => navigate('/substitutes')}
+            >
+              <CardContent className="p-6">
+                <div className="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
+                  <TrendingDown className="w-7 h-7 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
+                  Find Substitutes
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Discover cheaper generic alternatives
+                </p>
+                <Button variant="ghost" size="sm" className="group-hover:text-primary">
+                  Find Now <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
