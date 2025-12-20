@@ -291,7 +291,7 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="xl:hidden py-4 border-t border-border">
+          <div className="xl:hidden py-4 border-t border-border max-h-[calc(100vh-5rem)] overflow-y-auto">
             <div className="flex flex-col gap-2">
               {navigation.map((item) => (
                 <Link
@@ -308,7 +308,7 @@ const Header = () => {
                 </Link>
               ))}
               
-              <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-2">
                 Tools
               </div>
               {toolsMenu.map((tool) => {
@@ -325,6 +325,110 @@ const Header = () => {
                   </Link>
                 );
               })}
+
+              {isAdmin && (
+                <>
+                  <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-2">
+                    Admin Panel
+                  </div>
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <LayoutDashboard className="h-4 w-4" />
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/admin/medicines"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <Pill className="h-4 w-4" />
+                    Medicines
+                  </Link>
+                  <Link
+                    to="/admin/orders"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <Package className="h-4 w-4" />
+                    Orders
+                  </Link>
+                  <Link
+                    to="/admin/users"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <Users className="h-4 w-4" />
+                    Users
+                  </Link>
+                  <Link
+                    to="/admin/symptoms"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <Stethoscope className="h-4 w-4" />
+                    Symptoms
+                  </Link>
+                  <Link
+                    to="/admin/interactions"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <AlertTriangle className="h-4 w-4" />
+                    Interactions
+                  </Link>
+                  <Link
+                    to="/admin/substitutes"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <TrendingDown className="h-4 w-4" />
+                    Substitutes
+                  </Link>
+                  <Link
+                    to="/admin/prescriptions"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <FileText className="h-4 w-4" />
+                    Prescriptions
+                  </Link>
+                  <Link
+                    to="/admin/reviews"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <Star className="h-4 w-4" />
+                    Reviews
+                  </Link>
+                  <Link
+                    to="/admin/blog"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <BookOpen className="h-4 w-4" />
+                    Blog
+                  </Link>
+                  <Link
+                    to="/admin/analytics"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <BarChart3 className="h-4 w-4" />
+                    Analytics
+                  </Link>
+                  <Link
+                    to="/admin/settings"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <Settings className="h-4 w-4" />
+                    Settings
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

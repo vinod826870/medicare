@@ -226,15 +226,15 @@ export default function AdminInteractions() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Medicine Interactions</h1>
-          <p className="text-muted-foreground">Manage drug interaction warnings</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Medicine Interactions</h1>
+          <p className="text-muted-foreground text-sm md:text-base">Manage drug interaction warnings</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => handleOpenDialog()}>
+            <Button onClick={() => handleOpenDialog()} className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Add Interaction
             </Button>
@@ -442,10 +442,10 @@ export default function AdminInteractions() {
         <div className="grid gap-4">
           {filteredInteractions.map(interaction => (
             <Card key={interaction.id}>
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-center gap-3 mb-3 flex-wrap">
                       <AlertTriangle className="h-5 w-5 text-orange-500" />
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-semibold">{interaction.medicine_a?.name || 'Unknown'}</span>
@@ -458,7 +458,7 @@ export default function AdminInteractions() {
                     </div>
                     <p className="text-sm text-muted-foreground">{interaction.description}</p>
                   </div>
-                  <div className="flex gap-2 ml-4">
+                  <div className="flex gap-2 sm:ml-4">
                     <Button
                       size="sm"
                       variant="outline"

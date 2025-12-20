@@ -162,20 +162,20 @@ export default function AdminSymptoms() {
   }, {} as Record<string, Symptom[]>);
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Symptoms Management</h1>
-          <p className="text-muted-foreground">Manage symptoms and their medicine search keywords</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Symptoms Management</h1>
+          <p className="text-muted-foreground text-sm md:text-base">Manage symptoms and their medicine search keywords</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => handleOpenDialog()}>
+            <Button onClick={() => handleOpenDialog()} className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Add Symptom
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingSymptom ? 'Edit Symptom' : 'Add New Symptom'}</DialogTitle>
               <DialogDescription>
@@ -313,7 +313,7 @@ export default function AdminSymptoms() {
                   {categorySymptoms.map(symptom => (
                     <div
                       key={symptom.id}
-                      className="flex items-start justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-start sm:justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors gap-3"
                     >
                       <div className="flex-1">
                         <h3 className="font-semibold">{symptom.name}</h3>
@@ -323,13 +323,13 @@ export default function AdminSymptoms() {
                         {symptom.search_keywords && (
                           <div className="mt-2">
                             <p className="text-xs text-muted-foreground mb-1">Search Keywords:</p>
-                            <p className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                            <p className="text-sm font-mono bg-muted px-2 py-1 rounded break-all">
                               {symptom.search_keywords}
                             </p>
                           </div>
                         )}
                       </div>
-                      <div className="flex gap-2 ml-4">
+                      <div className="flex gap-2 sm:ml-4">
                         <Button
                           size="sm"
                           variant="outline"

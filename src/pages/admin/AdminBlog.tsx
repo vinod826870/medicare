@@ -152,19 +152,19 @@ const AdminBlog = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Blog Management</h1>
-            <p className="text-muted-foreground">Create and manage blog posts</p>
+            <h1 className="text-2xl md:text-3xl font-bold">Blog Management</h1>
+            <p className="text-muted-foreground text-sm md:text-base">Create and manage blog posts</p>
           </div>
           <Dialog open={dialogOpen} onOpenChange={(open) => {
             setDialogOpen(open);
             if (!open) resetForm();
           }}>
             <DialogTrigger asChild>
-              <Button className="gap-2">
+              <Button className="gap-2 w-full sm:w-auto">
                 <Plus className="w-4 h-4" />
                 New Post
               </Button>
@@ -293,10 +293,10 @@ const AdminBlog = () => {
           {posts.map((post) => (
             <Card key={post.id}>
               <CardHeader>
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CardTitle>{post.title}</CardTitle>
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <CardTitle className="text-lg md:text-xl">{post.title}</CardTitle>
                       <Badge variant={post.published ? 'default' : 'secondary'}>
                         {post.published ? 'Published' : 'Draft'}
                       </Badge>

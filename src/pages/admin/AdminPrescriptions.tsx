@@ -46,10 +46,10 @@ export default function AdminPrescriptions() {
   });
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-4 md:p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Prescriptions Management</h1>
-        <p className="text-muted-foreground">View and manage user prescriptions</p>
+        <h1 className="text-2xl md:text-3xl font-bold">Prescriptions Management</h1>
+        <p className="text-muted-foreground text-sm md:text-base">View and manage user prescriptions</p>
       </div>
 
       <Card>
@@ -90,10 +90,10 @@ export default function AdminPrescriptions() {
         <div className="grid gap-4">
           {filteredPrescriptions.map(prescription => (
             <Card key={prescription.id}>
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-center gap-3 mb-3 flex-wrap">
                       <FileText className="h-5 w-5 text-blue-500" />
                       <div>
                         <h3 className="font-semibold">Dr. {prescription.doctor_name}</h3>
@@ -105,7 +105,7 @@ export default function AdminPrescriptions() {
                         {prescription.status}
                       </Badge>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                       <div>
                         <span className="text-muted-foreground">Issue Date:</span>{' '}
                         {new Date(prescription.issue_date).toLocaleDateString()}
@@ -119,7 +119,7 @@ export default function AdminPrescriptions() {
                       <p className="text-sm text-muted-foreground mt-2">{prescription.notes}</p>
                     )}
                   </div>
-                  <div className="flex gap-2 ml-4">
+                  <div className="flex gap-2 sm:ml-4">
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button size="sm" variant="outline">
