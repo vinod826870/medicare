@@ -513,3 +513,515 @@ export const blogApi = {
     return categories;
   }
 };
+
+// New Features API (Reviews, Prescriptions, Interactions, Substitutes, Symptoms)
+export const featuresApi = {
+  // Medicine Reviews API
+  async getMedicineReviews(medicineId: number) {
+    const { data, error } = await supabase
+      .from('medicine_reviews')
+      .select(`
+        *,
+        profiles:user_id (
+          full_name,
+          email
+        )
+      `)
+      .eq('medicine_id', medicineId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching reviews:', error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getMedicineRatingSummary(medicineId: number) {
+    const { data, error } = await supabase
+      .from('medicine_ratings_summary')
+      .select('*')
+      .eq('medicine_id', medicineId)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching rating summary:', error);
+      return null;
+    }
+
+    return data;
+  },
+
+  async createMedicineReview(review: { medicine_id: number; rating: number; title: string; comment?: string }) {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User must be logged in to submit a review');
+    }
+
+    const { data, error } = await supabase
+      .from('medicine_reviews')
+      .insert({
+        ...review,
+        user_id: user.id
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating review:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async updateMedicineReview(reviewId: string, updates: { rating?: number; title?: string; comment?: string }) {
+    const { data, error } = await supabase
+      .from('medicine_reviews')
+      .update(updates)
+      .eq('id', reviewId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating review:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async deleteMedicineReview(reviewId: string) {
+    const { error } = await supabase
+      .from('medicine_reviews')
+      .delete()
+      .eq('id', reviewId);
+
+    if (error) {
+      console.error('Error deleting review:', error);
+      throw error;
+    }
+  },
+
+  // Prescriptions API
+  async getUserPrescriptions() {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return [];
+    }
+
+    const { data, error } = await supabase
+      .from('prescriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching prescriptions:', error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  async createPrescription(prescription: { image_url: string; doctor_name?: string; issue_date?: string; expiry_date?: string; notes?: string }) {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User must be logged in to upload a prescription');
+    }
+
+    const { data, error } = await supabase
+      .from('prescriptions')
+      .insert({
+        ...prescription,
+        user_id: user.id
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating prescription:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async updatePrescription(prescriptionId: string, updates: { doctor_name?: string; issue_date?: string; expiry_date?: string; notes?: string; status?: string }) {
+    const { data, error } = await supabase
+      .from('prescriptions')
+      .update(updates)
+      .eq('id', prescriptionId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating prescription:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async deletePrescription(prescriptionId: string) {
+    const { error } = await supabase
+      .from('prescriptions')
+      .delete()
+      .eq('id', prescriptionId);
+
+    if (error) {
+      console.error('Error deleting prescription:', error);
+      throw error;
+    }
+  },
+
+  // Medicine Interactions API
+  async checkMedicineInteractions(medicineIds: number[]) {
+    if (medicineIds.length < 2) {
+      return [];
+    }
+
+    const { data, error } = await supabase
+      .from('medicine_interactions')
+      .select(`
+        *,
+        medicine_a:medicine_data!medicine_interactions_medicine_a_id_fkey(id, name),
+        medicine_b:medicine_data!medicine_interactions_medicine_b_id_fkey(id, name)
+      `)
+      .or(
+        medicineIds.map((id, i) => 
+          medicineIds.slice(i + 1).map(otherId => {
+            const [smaller, larger] = id < otherId ? [id, otherId] : [otherId, id];
+            return `and(medicine_a_id.eq.${smaller},medicine_b_id.eq.${larger})`;
+          }).join(',')
+        ).filter(Boolean).join(',')
+      );
+
+    if (error) {
+      console.error('Error checking interactions:', error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  // Medicine Substitutes API
+  async getMedicineSubstitutes(medicineId: number) {
+    const { data, error } = await supabase
+      .from('medicine_substitutes')
+      .select(`
+        *,
+        substitute_medicine:medicine_data!medicine_substitutes_substitute_medicine_id_fkey(*)
+      `)
+      .eq('original_medicine_id', medicineId)
+      .order('price_difference', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching substitutes:', error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  // Symptoms API
+  async getAllSymptoms() {
+    const { data, error} = await supabase
+      .from('symptoms')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching symptoms:', error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getSymptomsByCategory(category: string) {
+    const { data, error } = await supabase
+      .from('symptoms')
+      .select('*')
+      .eq('category', category)
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching symptoms by category:', error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getMedicinesBySymptoms(symptomIds: string[]) {
+    if (symptomIds.length === 0) {
+      return [];
+    }
+
+    // First, get the selected symptoms with their search keywords
+    const { data: symptomsData, error: symptomsError } = await supabase
+      .from('symptoms')
+      .select('*')
+      .in('id', symptomIds);
+
+    if (symptomsError) {
+      console.error('Error fetching symptoms:', symptomsError);
+      return [];
+    }
+
+    if (!symptomsData || symptomsData.length === 0) {
+      return [];
+    }
+
+    // Build search keywords from symptom names and search_keywords
+    const keywords = symptomsData
+      .map(s => (s.search_keywords || s.name).toLowerCase())
+      .join(' ')
+      .split(' ')
+      .filter(k => k.length > 3); // Filter out short words
+
+    if (keywords.length === 0) {
+      return [];
+    }
+
+    // Search medicines by name or type matching any keyword
+    const searchConditions = keywords
+      .slice(0, 10) // Limit to first 10 keywords to avoid query length issues
+      .map(keyword => `name.ilike.%${keyword}%,type.ilike.%${keyword}%`)
+      .join(',');
+    
+    const { data, error } = await supabase
+      .from('medicine_data')
+      .select('*')
+      .or(searchConditions)
+      .limit(30);
+
+    if (error) {
+      console.error('Error fetching medicines by symptoms:', error);
+      return [];
+    }
+
+    // Format the results to match expected structure
+    const results = Array.isArray(data) ? data.map(medicine => ({
+      medicine_id: medicine.id,
+      relevance_score: 8,
+      medicine: medicine
+    })) : [];
+
+    return results;
+  },
+
+  // Symptom CRUD operations
+  async createSymptom(symptom: { name: string; description: string; category: string; search_keywords: string }) {
+    const { data, error } = await supabase
+      .from('symptoms')
+      .insert([symptom])
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error creating symptom:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async updateSymptom(id: string, updates: Partial<{ name: string; description: string; category: string; search_keywords: string }>) {
+    const { data, error } = await supabase
+      .from('symptoms')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error updating symptom:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async deleteSymptom(id: string) {
+    const { error } = await supabase
+      .from('symptoms')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting symptom:', error);
+      throw error;
+    }
+
+    return true;
+  },
+
+  // Interaction CRUD operations
+  async getAllInteractions() {
+    const { data, error } = await supabase
+      .from('medicine_interactions')
+      .select(`
+        *,
+        medicine_a:medicine_data!medicine_interactions_medicine_a_id_fkey(*),
+        medicine_b:medicine_data!medicine_interactions_medicine_b_id_fkey(*)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching interactions:', error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  async createInteraction(interaction: { medicine_a_id: number; medicine_b_id: number; severity: string; description: string; recommendation: string }) {
+    const { data, error } = await supabase
+      .from('medicine_interactions')
+      .insert([interaction])
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error creating interaction:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async updateInteraction(id: string, updates: Partial<{ medicine_a_id: number; medicine_b_id: number; severity: string; description: string; recommendation: string }>) {
+    const { data, error } = await supabase
+      .from('medicine_interactions')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error updating interaction:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async deleteInteraction(id: string) {
+    const { error } = await supabase
+      .from('medicine_interactions')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting interaction:', error);
+      throw error;
+    }
+
+    return true;
+  },
+
+  // Substitute CRUD operations
+  async getAllSubstitutes() {
+    const { data, error } = await supabase
+      .from('medicine_substitutes')
+      .select(`
+        *,
+        original_medicine:medicine_data!medicine_substitutes_original_medicine_id_fkey(*),
+        substitute_medicine:medicine_data!medicine_substitutes_substitute_medicine_id_fkey(*)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching substitutes:', error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  async createSubstitute(substitute: { original_medicine_id: number; substitute_medicine_id: number; price_difference: number; notes: string }) {
+    const { data, error } = await supabase
+      .from('medicine_substitutes')
+      .insert([substitute])
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error creating substitute:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async updateSubstitute(id: string, updates: Partial<{ original_medicine_id: number; substitute_medicine_id: number; price_difference: number; notes: string }>) {
+    const { data, error } = await supabase
+      .from('medicine_substitutes')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error updating substitute:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  async deleteSubstitute(id: string) {
+    const { error } = await supabase
+      .from('medicine_substitutes')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting substitute:', error);
+      throw error;
+    }
+
+    return true;
+  },
+
+  // Admin operations for reviews and prescriptions
+  async getAllReviews() {
+    const { data, error } = await supabase
+      .from('medicine_reviews')
+      .select(`
+        *,
+        user:profiles(email)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching all reviews:', error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  },
+
+  async getAllPrescriptions() {
+    const { data, error } = await supabase
+      .from('prescriptions')
+      .select(`
+        *,
+        user:profiles(email)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching all prescriptions:', error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  }
+};

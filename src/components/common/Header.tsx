@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, LogOut, Settings, Package, Menu, X, Pill, Heart } from "lucide-react";
+import { ShoppingCart, User, LogOut, Settings, Package, Menu, X, Pill, Heart, ChevronDown, Stethoscope, AlertTriangle, FileText, TrendingDown, LayoutDashboard, Users, BarChart3, BookOpen, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,6 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -81,6 +84,13 @@ const Header = () => {
     { name: 'Compare', path: '/compare' },
   ];
 
+  const toolsMenu = [
+    { name: 'Symptom Checker', path: '/symptom-checker', icon: Stethoscope },
+    { name: 'Interaction Checker', path: '/interaction-checker', icon: AlertTriangle },
+    { name: 'Prescriptions', path: '/prescriptions', icon: FileText },
+    { name: 'Find Substitutes', path: '/substitutes', icon: TrendingDown },
+  ];
+
   return (
     <header className="bg-card border-b border-border sticky top-0 z-50 shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 xl:px-6">
@@ -109,6 +119,31 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted"
+                  >
+                    Tools
+                    <ChevronDown className="ml-1 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  {toolsMenu.map((tool) => {
+                    const Icon = tool.icon;
+                    return (
+                      <DropdownMenuItem key={tool.path} asChild>
+                        <Link to={tool.path} className="flex items-center gap-2 cursor-pointer">
+                          <Icon className="h-4 w-4" />
+                          {tool.name}
+                        </Link>
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -171,10 +206,64 @@ const Header = () => {
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => navigate('/admin')}>
-                        <Settings className="w-4 h-4 mr-2" />
-                        Admin Dashboard
-                      </DropdownMenuItem>
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>
+                          <LayoutDashboard className="w-4 h-4 mr-2" />
+                          Admin Panel
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent>
+                          <DropdownMenuItem onClick={() => navigate('/admin')}>
+                            <LayoutDashboard className="w-4 h-4 mr-2" />
+                            Dashboard
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/admin/medicines')}>
+                            <Pill className="w-4 h-4 mr-2" />
+                            Medicines
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/admin/orders')}>
+                            <Package className="w-4 h-4 mr-2" />
+                            Orders
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/admin/users')}>
+                            <Users className="w-4 h-4 mr-2" />
+                            Users
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => navigate('/admin/symptoms')}>
+                            <Stethoscope className="w-4 h-4 mr-2" />
+                            Symptoms
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/admin/interactions')}>
+                            <AlertTriangle className="w-4 h-4 mr-2" />
+                            Interactions
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/admin/substitutes')}>
+                            <TrendingDown className="w-4 h-4 mr-2" />
+                            Substitutes
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/admin/prescriptions')}>
+                            <FileText className="w-4 h-4 mr-2" />
+                            Prescriptions
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/admin/reviews')}>
+                            <Star className="w-4 h-4 mr-2" />
+                            Reviews
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => navigate('/admin/blog')}>
+                            <BookOpen className="w-4 h-4 mr-2" />
+                            Blog
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/admin/analytics')}>
+                            <BarChart3 className="w-4 h-4 mr-2" />
+                            Analytics
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/admin/settings')}>
+                            <Settings className="w-4 h-4 mr-2" />
+                            Settings
+                          </DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                      </DropdownMenuSub>
                     </>
                   )}
                   <DropdownMenuSeparator />
@@ -218,6 +307,24 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
+              
+              <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Tools
+              </div>
+              {toolsMenu.map((tool) => {
+                const Icon = tool.icon;
+                return (
+                  <Link
+                    key={tool.path}
+                    to={tool.path}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-2"
+                  >
+                    <Icon className="h-4 w-4" />
+                    {tool.name}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}

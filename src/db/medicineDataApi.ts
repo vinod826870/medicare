@@ -160,9 +160,15 @@ export async function getMedicineById(id: number): Promise<MedicineData | null> 
 // Search medicines with autocomplete (fast trigram search)
 export async function searchMedicines(query: string, limit: number = 10): Promise<MedicineData[]> {
   try {
-    if (!query) return [];
+    console.log('🔍 searchMedicines (Supabase RPC) called with:', { query, limit });
+    
+    if (!query) {
+      console.log('⚠️ Empty query provided');
+      return [];
+    }
 
     // Use optimized search function
+    console.log('📡 Calling supabase.rpc("search_medicines")...');
     const { data, error } = await supabase
       .rpc('search_medicines', {
         search_query: query,
@@ -173,13 +179,18 @@ export async function searchMedicines(query: string, limit: number = 10): Promis
       });
 
     if (error) {
-      console.error('Error searching medicines:', error);
+      console.error('❌ Supabase RPC error:', error);
       return [];
+    }
+
+    console.log('✅ Supabase RPC returned:', data ? data.length : 0, 'results');
+    if (data && data.length > 0) {
+      console.log('First result sample:', data[0]);
     }
 
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error('Error in searchMedicines:', error);
+    console.error('❌ Exception in searchMedicines:', error);
     return [];
   }
 }

@@ -263,11 +263,15 @@ export const medicineApiService = {
   // Search medicines
   searchMedicines: async (query: string, limit?: number): Promise<MedicineApiData[]> => {
     try {
+      console.log('🔎 medicineApiService.searchMedicines called with:', { query, limit, useLocalData });
+      
       if (useLocalData) {
+        console.log('📦 Using local data for search');
         return searchLocalMedicines(query);
       }
 
       if (!query) {
+        console.log('⚠️ Empty query, returning featured medicines');
         try {
           const featured = await getFeaturedMedicines(limit || 20);
           return featured.map(medicine => {
@@ -279,12 +283,23 @@ export const medicineApiService = {
             };
           });
         } catch (error) {
-          return LOCAL_MEDICINES;
+          console.error('Error getting featured medicines:', error);
+          // Return empty array on error - do not fall back to local data
+          return [];
         }
       }
 
       try {
+        console.log('🌐 Calling Supabase searchSupabaseMedicines...');
         const results = await searchSupabaseMedicines(query, limit || 20);
+        console.log(`✅ Supabase returned ${results.length} results`);
+        
+        // Return empty array if no results - do not fall back to local data
+        if (results.length === 0) {
+          console.log('ℹ️ No results from Supabase for query:', query);
+          return [];
+        }
+        
         return results.map(medicine => {
           const formatted = formatMedicineForDisplay(medicine);
           return {
@@ -294,12 +309,14 @@ export const medicineApiService = {
           };
         });
       } catch (error) {
-        console.error('Error searching Supabase:', error);
-        return searchLocalMedicines(query);
+        console.error('❌ Error searching Supabase:', error);
+        // Return empty array on error - do not fall back to local data
+        return [];
       }
     } catch (error) {
-      console.error('Error searching medicines:', error);
-      return searchLocalMedicines(query);
+      console.error('❌ Error in searchMedicines:', error);
+      // Return empty array on error - do not fall back to local data
+      return [];
     }
   },
 

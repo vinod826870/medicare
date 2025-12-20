@@ -196,3 +196,110 @@ export interface UpdateBlogPost {
   published?: boolean;
 }
 
+// New Feature Types
+
+// Medicine Reviews
+export interface MedicineReview {
+  id: string;
+  medicine_id: number;
+  user_id: string;
+  rating: number;
+  title: string;
+  comment: string | null;
+  helpful_count: number;
+  verified_purchase: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateMedicineReview {
+  medicine_id: number;
+  rating: number;
+  title: string;
+  comment?: string;
+}
+
+export interface MedicineRatingSummary {
+  medicine_id: number;
+  review_count: number;
+  average_rating: number;
+  five_star_count: number;
+  four_star_count: number;
+  three_star_count: number;
+  two_star_count: number;
+  one_star_count: number;
+}
+
+// Prescriptions
+export type PrescriptionStatus = 'active' | 'expired' | 'used';
+
+export interface Prescription {
+  id: string;
+  user_id: string;
+  image_url: string;
+  doctor_name: string | null;
+  issue_date: string | null;
+  expiry_date: string | null;
+  notes: string | null;
+  status: PrescriptionStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreatePrescription {
+  image_url: string;
+  doctor_name?: string;
+  issue_date?: string;
+  expiry_date?: string;
+  notes?: string;
+}
+
+// Medicine Interactions
+export type InteractionSeverity = 'mild' | 'moderate' | 'severe';
+
+export interface MedicineInteraction {
+  id: string;
+  medicine_a_id: number;
+  medicine_b_id: number;
+  severity: InteractionSeverity;
+  description: string;
+  recommendation: string;
+  created_at: string;
+}
+
+// Medicine Substitutes
+export interface MedicineSubstitute {
+  id: string;
+  original_medicine_id: number;
+  substitute_medicine_id: number;
+  reason: string;
+  price_difference: number | null;
+  created_at: string;
+}
+
+export interface SubstituteWithDetails extends MedicineSubstitute {
+  substitute_medicine?: MedicineData;
+}
+
+// Symptoms
+export interface Symptom {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  search_keywords?: string | null;
+  created_at: string;
+}
+
+export interface SymptomMedicineMapping {
+  id: string;
+  symptom_id: string;
+  medicine_id: number;
+  relevance_score: number | null;
+  created_at: string;
+}
+
+export interface SymptomWithMedicines extends Symptom {
+  medicines?: MedicineData[];
+}
+
