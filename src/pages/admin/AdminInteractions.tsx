@@ -226,9 +226,9 @@ export default function AdminInteractions() {
   };
 
   return (
-    <div className="container mx-auto p-4 md:p-6 space-y-6">
+    <div className="container mx-auto p-4 md:p-6 space-y-6 max-w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
+        <div className="min-w-0">
           <h1 className="text-2xl md:text-3xl font-bold">Medicine Interactions</h1>
           <p className="text-muted-foreground text-sm md:text-base">Manage drug interaction warnings</p>
         </div>
@@ -439,23 +439,23 @@ export default function AdminInteractions() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-4 w-full">
           {filteredInteractions.map(interaction => (
-            <Card key={interaction.id}>
-              <CardContent className="p-4 md:p-6">
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start gap-2 mb-2">
+            <Card key={interaction.id} className="w-full overflow-hidden">
+              <CardContent className="p-4 md:p-6 w-full">
+                <div className="flex flex-col gap-3 w-full min-w-0">
+                  <div className="flex items-start justify-between gap-2 w-full min-w-0">
+                    <div className="flex-1 min-w-0 overflow-hidden">
+                      <div className="flex items-start gap-2 mb-2 min-w-0">
                         <AlertTriangle className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className="font-semibold break-words">{interaction.medicine_a?.name || 'Unknown'}</span>
-                              <span className="text-muted-foreground">+</span>
-                              <span className="font-semibold break-words">{interaction.medicine_b?.name || 'Unknown'}</span>
+                        <div className="flex-1 min-w-0 overflow-hidden">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 min-w-0">
+                              <span className="font-semibold break-words text-sm sm:text-base">{interaction.medicine_a?.name || 'Unknown'}</span>
+                              <span className="text-muted-foreground flex-shrink-0">+</span>
+                              <span className="font-semibold break-words text-sm sm:text-base">{interaction.medicine_b?.name || 'Unknown'}</span>
                             </div>
-                            <Badge variant={getSeverityColor(interaction.severity)} className="w-fit">
+                            <Badge variant={getSeverityColor(interaction.severity)} className="w-fit flex-shrink-0">
                               {interaction.severity?.toUpperCase()}
                             </Badge>
                           </div>
@@ -463,7 +463,7 @@ export default function AdminInteractions() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-2 flex-shrink-0">
+                    <div className="flex gap-1 sm:gap-2 flex-shrink-0">
                       <Button
                         size="sm"
                         variant="outline"
