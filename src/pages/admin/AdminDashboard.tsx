@@ -265,7 +265,7 @@ const AdminDashboard = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={2} name="Revenue ($)" />
+                  <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={2} name="Revenue (₹)" />
                   <Line type="monotone" dataKey="orders" stroke="#10b981" strokeWidth={2} name="Orders" />
                 </LineChart>
               </ResponsiveContainer>

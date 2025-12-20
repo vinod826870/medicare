@@ -268,9 +268,14 @@ const AdminAnalytics = () => {
                         outerRadius={80}
                         fill="#8884d8"
                         dataKey="value"
+                        style={{ outline: 'none' }}
                       >
                         {revenueByCategory.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={COLORS[index % COLORS.length]}
+                            style={{ outline: 'none' }}
+                          />
                         ))}
                       </Pie>
                       <Tooltip />
@@ -340,7 +345,7 @@ const AdminAnalytics = () => {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold">${medicine.revenue}</p>
+                          <p className="font-bold">₹{medicine.revenue}</p>
                         </div>
                       </div>
                     ))}

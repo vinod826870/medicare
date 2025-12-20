@@ -168,15 +168,15 @@ export default function AdminSubstitutes() {
   });
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Medicine Substitutes</h1>
-          <p className="text-muted-foreground">Manage generic alternatives and substitutes</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Medicine Substitutes</h1>
+          <p className="text-muted-foreground text-sm md:text-base">Manage generic alternatives and substitutes</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => handleOpenDialog()}>
+            <Button onClick={() => handleOpenDialog()} className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Add Substitute
             </Button>
@@ -354,10 +354,10 @@ export default function AdminSubstitutes() {
         <div className="grid gap-4">
           {filteredSubstitutes.map(sub => (
             <Card key={sub.id}>
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-center gap-3 mb-3 flex-wrap">
                       <TrendingDown className="h-5 w-5 text-green-500" />
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-semibold">{sub.original_medicine?.name || 'Unknown'}</span>
@@ -374,7 +374,7 @@ export default function AdminSubstitutes() {
                       <p className="text-sm text-muted-foreground">{sub.notes}</p>
                     )}
                   </div>
-                  <div className="flex gap-2 ml-4">
+                  <div className="flex gap-2 sm:ml-4">
                     <Button size="sm" variant="outline" onClick={() => handleOpenDialog(sub)}>
                       <Edit className="h-4 w-4" />
                     </Button>
