@@ -443,36 +443,42 @@ export default function AdminInteractions() {
           {filteredInteractions.map(interaction => (
             <Card key={interaction.id}>
               <CardContent className="p-4 md:p-6">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3 flex-wrap">
-                      <AlertTriangle className="h-5 w-5 text-orange-500" />
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold">{interaction.medicine_a?.name || 'Unknown'}</span>
-                        <span className="text-muted-foreground">+</span>
-                        <span className="font-semibold">{interaction.medicine_b?.name || 'Unknown'}</span>
-                        <Badge variant={getSeverityColor(interaction.severity)}>
-                          {interaction.severity?.toUpperCase()}
-                        </Badge>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start gap-2 mb-2">
+                        <AlertTriangle className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="font-semibold break-words">{interaction.medicine_a?.name || 'Unknown'}</span>
+                              <span className="text-muted-foreground">+</span>
+                              <span className="font-semibold break-words">{interaction.medicine_b?.name || 'Unknown'}</span>
+                            </div>
+                            <Badge variant={getSeverityColor(interaction.severity)} className="w-fit">
+                              {interaction.severity?.toUpperCase()}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground break-words">{interaction.description}</p>
+                        </div>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground">{interaction.description}</p>
-                  </div>
-                  <div className="flex gap-2 sm:ml-4">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleOpenDialog(interaction)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleDelete(interaction.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex gap-2 flex-shrink-0">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleOpenDialog(interaction)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDelete(interaction.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
