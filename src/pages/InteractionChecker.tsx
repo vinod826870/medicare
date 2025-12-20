@@ -132,10 +132,10 @@ export default function InteractionChecker() {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl xl:text-4xl font-bold text-foreground mb-2">
+          <h1 className="text-2xl sm:text-3xl xl:text-4xl font-bold text-foreground mb-2">
             Medicine Interaction Checker
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">
             Check if your medicines can be safely taken together
           </p>
         </div>
@@ -288,22 +288,25 @@ export default function InteractionChecker() {
                           key={interaction.id}
                           className={getSeverityColor(interaction.severity)}
                         >
-                          <div className="flex items-start gap-3">
-                            {getSeverityIcon(interaction.severity)}
-                            <div className="flex-1">
-                              <div className="font-semibold mb-1 flex items-center gap-2">
-                                <Badge variant="outline" className="text-xs">
+                          <div className="flex items-start gap-2 sm:gap-3">
+                            <div className="flex-shrink-0 mt-0.5">
+                              {getSeverityIcon(interaction.severity)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold mb-1 flex flex-wrap items-center gap-2">
+                                <Badge variant="outline" className="text-xs flex-shrink-0">
                                   {interaction.severity.toUpperCase()}
                                 </Badge>
-                                Interaction Detected
+                                <span className="text-sm sm:text-base">Interaction Detected</span>
                               </div>
-                              <div className="text-sm mb-2">
-                                <strong>{interaction.medicine_a?.name}</strong> and{' '}
-                                <strong>{interaction.medicine_b?.name}</strong>
+                              <div className="text-sm mb-2 break-words">
+                                <strong className="break-words">{interaction.medicine_a?.name}</strong>
+                                <span className="mx-1">and</span>
+                                <strong className="break-words">{interaction.medicine_b?.name}</strong>
                               </div>
-                              <div className="text-sm mb-2">{interaction.description}</div>
-                              <div className="text-sm font-medium">
-                                Recommendation: {interaction.recommendation}
+                              <div className="text-sm mb-2 break-words">{interaction.description}</div>
+                              <div className="text-sm font-medium break-words">
+                                <span className="font-semibold">Recommendation:</span> {interaction.recommendation}
                               </div>
                             </div>
                           </div>
